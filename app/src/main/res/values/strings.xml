@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">kreaprint</string>
+    <string name="greeting_splash">Cetak Apa Saja, Kapan Saja!</string>
+    <string name="greeting_beranda">Cetak Apa Saja, Kapan Saja!</string>
+    <string name="greeting_slogan">Pesan online, ambil langsung!</string>
+    <string name="loading_text">Loading</string>
+    <string name="brand_text">KreaPrint</string>
+</resources>
