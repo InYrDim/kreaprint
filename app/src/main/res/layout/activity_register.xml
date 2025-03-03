@@ -55,7 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="@font/font_content"
-            android:text="Login to your account"
+            android:text="Create an account"
             android:textColor="@android:color/white"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -127,11 +127,11 @@
             tools:visibility="visible">
 
             <Button
-                android:id="@+id/btn_login"
+                android:id="@+id/btn_signup"
                 style="@style/ButtonPrimary"
                 android:layout_width="match_parent"
                 android:layout_marginTop="20dp"
-                android:text="Log In"
+                android:text="Sign up"
 
                 />
 
@@ -183,16 +183,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Belum punya akun?"
+                android:text="Saya memiliki akun "
                 android:textColor="@android:color/white"
                 android:textSize="14sp" />
 
             <TextView
-                android:id="@+id/href_register"
+                android:id="@+id/href_login"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Buat akun"
+                android:text="Login"
                 android:textColor="@color/accent_color"
                 android:textSize="14sp"
                 android:textStyle="bold" />

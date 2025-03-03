@@ -2,43 +2,26 @@ package com.example.kreaprint;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 public class LoginActivity extends AppCompatActivity {
-    private EditText editTextEmail, editTextPassword;
-    private Button btnLogin;
 
+    private TextView goRegister;
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        editTextEmail = findViewById(R.id.reg_email);
-        editTextPassword = findViewById(R.id.reg_password);
-        btnLogin = findViewById(R.id.btn_signup);
+        goRegister = findViewById(R.id.href_register);
 
-        btnLogin.setOnClickListener(v -> {
-
-            if (isValidLogin()) {
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-            } else {
-                Toast.makeText(this, "Login gagal!", Toast.LENGTH_SHORT).show();
-            }
+        goRegister.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         });
     }
-
-    private boolean isValidLogin() {
-        String email = "admin@email.com";
-        String password = "1234";
-
-        return editTextEmail.getText().toString().equals(email) &&
-                editTextPassword.getText().toString().equals(password);
-    }
 }
-
