@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/home"
+        android:icon="@drawable/ic_home"
 
+        android:title="Beranda" />
     <item
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:title="@string/beranda_navigation" />
+        android:id="@+id/order"
+        android:icon="@drawable/ic_order"
+        android:title="Pesanan" />
     <item
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:title="@string/pesanan_navigation" />
-    <item android:title="@string/profil_navigation" />
+        android:id="@+id/profile"
+        android:icon="@drawable/ic_user"
+        android:title="Profil" />
 </menu>
