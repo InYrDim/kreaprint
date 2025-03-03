@@ -75,7 +75,26 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
+
+            <EditText
+                android:id="@+id/reg_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/border_edittext"
+                android:hint="Username"
+                android:inputType="text"
+                android:padding="16dp"
+                android:textColor="@android:color/white"
+                android:textColorHint="#BDBDBD" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            >
 
             <EditText
                 android:id="@+id/reg_email"
@@ -91,7 +110,6 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/relativeLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp">
@@ -107,15 +125,6 @@
                 android:textColor="@android:color/white"
                 android:textColorHint="#BDBDBD" />
 
-            <ImageView
-                android:id="@+id/iv_toggle_password"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="10dp"
-                android:contentDescription="Toggle Password Visibility"
-                android:src="@drawable/eye_closed" />
         </RelativeLayout>
 
         <LinearLayout

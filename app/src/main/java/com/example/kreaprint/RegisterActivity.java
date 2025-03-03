@@ -1,10 +1,10 @@
 package com.example.kreaprint;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -14,7 +14,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class RegisterActivity extends AppCompatActivity {
-    private EditText editTextEmail, editTextPassword;
+    private EditText editTextEmail, editTextPassword, editTextUsername;
     private TextView goLogin;
     private Button btnRegister;
     private ImageView ivTogglePassword;
@@ -27,16 +27,9 @@ public class RegisterActivity extends AppCompatActivity {
 
         editTextEmail = findViewById(R.id.reg_email);
         editTextPassword = findViewById(R.id.reg_password);
+        editTextUsername = findViewById(R.id.reg_username);
+
         btnRegister = findViewById(R.id.btn_signup);
-
-        ivTogglePassword = findViewById(R.id.iv_toggle_password);
-
-        ivTogglePassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                togglePasswordVisibility();
-            }
-        });
 
         btnRegister.setOnClickListener(v -> {
             if (isValidLogin()) {
@@ -56,22 +49,6 @@ public class RegisterActivity extends AppCompatActivity {
             startActivity(intent);
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         });
-    }
-
-    private void togglePasswordVisibility() {
-        if (isPasswordVisible) {
-            // Sembunyikan password
-            editTextPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
-            ivTogglePassword.setImageResource(R.drawable.eye_closed);
-        } else {
-            // Tampilkan password
-            editTextPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-            ivTogglePassword.setImageResource(R.drawable.eye_open);
-        }
-        // Toggle status
-        isPasswordVisible = !isPasswordVisible;
-        // Set cursor ke akhir teks
-        editTextPassword.setSelection(editTextPassword.getText().length());
     }
 
     private boolean isValidLogin() {
