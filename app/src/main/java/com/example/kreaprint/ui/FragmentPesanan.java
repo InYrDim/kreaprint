@@ -43,8 +43,21 @@ public class FragmentPesanan extends Fragment {
             } else {
                 tvNoOrders.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
-                adapter = new PesananAdapter(getContext(), pesananList);
+//                adapter = new PesananAdapter(getContext(), pesananList);
+//                recyclerView.setAdapter(adapter);
+
+                PesananAdapter adapter = new PesananAdapter(getContext(), pesananList);
                 recyclerView.setAdapter(adapter);
+
+                adapter.setOnItemClickListener(pesanan -> {
+                    DetailPesananFragment detailFragment = DetailPesananFragment.newInstance(pesanan);
+                    requireActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, detailFragment)
+                            .addToBackStack(null)
+                            .commit();
+                });
+
+
             }
         });
 

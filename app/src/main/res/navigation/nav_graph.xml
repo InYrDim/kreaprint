@@ -18,5 +18,9 @@
         android:id="@+id/detailPesananFragment"
         android:name="com.example.kreaprint.ui.DetailPesananFragment"
         android:label="Detail Pesanan"
-        tools:layout="@layout/fragment_detail_pesanan"/>
+        tools:layout="@layout/fragment_detail_pesanan">
+        <argument
+            android:name="pesanan"
+            app:argType="com.example.kreaprint.model.Pesanan" />
+    </fragment>
 </navigation>

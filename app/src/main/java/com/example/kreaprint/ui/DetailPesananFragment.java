@@ -7,34 +7,51 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.example.kreaprint.R;
+import com.example.kreaprint.model.Pesanan;
 
 public class DetailPesananFragment extends Fragment {
-    private TextView tvNama, tvKategori, tvStatus;
-    private ImageView ivProduk;
+
+    private static final String ARG_PESANAN = "pesanan";
+    private Pesanan pesanan;
+
+    public static DetailPesananFragment newInstance(Pesanan pesanan) {
+        DetailPesananFragment fragment = new DetailPesananFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(ARG_PESANAN, pesanan);  // Mengirimkan data menggunakan Parcelable
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_detail_pesanan, container, false);
+        return inflater.inflate(R.layout.fragment_detail_pesanan, container, false);
+    }
 
-        tvNama = view.findViewById(R.id.tv_detail_nama);
-        tvKategori = view.findViewById(R.id.tv_detail_kategori);
-        tvStatus = view.findViewById(R.id.tv_detail_status);
-        ivProduk = view.findViewById(R.id.iv_detail_produk);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        // Ambil data dari bundle
+        TextView tvNama = view.findViewById(R.id.tv_detail_nama);
+        TextView tvKategori = view.findViewById(R.id.tv_detail_kategori);
+        TextView tvStatus = view.findViewById(R.id.tv_detail_status);
+        ImageView ivGambar = view.findViewById(R.id.iv_detail_gambar);
+
         if (getArguments() != null) {
-            tvNama.setText(getArguments().getString("nama"));
-            tvKategori.setText(getArguments().getString("kategori"));
-            tvStatus.setText(getArguments().getString("statusPesanan"));
-            String imageUrl = getArguments().getString("imageUrl");
+            pesanan = getArguments().getParcelable(ARG_PESANAN);  // Mengambil data Parcelable
 
-            // Load image dengan Glide
-            Glide.with(requireContext()).load(imageUrl).into(ivProduk);
+            if (pesanan != null) {
+                tvNama.setText(pesanan.getNama());
+                tvKategori.setText(pesanan.getKategori());
+                tvStatus.setText(pesanan.getStatusPesanan());
+
+                Glide.with(requireContext())
+                        .load(pesanan.getImageUrl())
+                        .into(ivGambar);
+            }
         }
-
-        return view;
     }
 }

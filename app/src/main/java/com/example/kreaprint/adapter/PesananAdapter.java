@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -18,7 +19,7 @@ import java.util.List;
 public class PesananAdapter extends RecyclerView.Adapter<PesananAdapter.ViewHolder> {
     private Context context;
     private List<Pesanan> pesananList;
-
+    private OnItemClickListener listener;
     public PesananAdapter(Context context, List<Pesanan> pesananList) {
         this.context = context;
         this.pesananList = pesananList;
@@ -46,6 +47,12 @@ public class PesananAdapter extends RecyclerView.Adapter<PesananAdapter.ViewHold
         Animation animation = AnimationUtils.loadAnimation(holder.itemView.getContext(), R.anim.pop_up);
 
         holder.itemView.startAnimation(animation);
+
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onItemClick(pesanan);
+            }
+        });
     }
 
     @Override
@@ -53,6 +60,13 @@ public class PesananAdapter extends RecyclerView.Adapter<PesananAdapter.ViewHold
         return pesananList.size();
     }
 
+    public interface OnItemClickListener {
+        void onItemClick(Pesanan pesanan);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvNama, tvKategori, tvStatusPesanan;
         ImageView ivProduct;
