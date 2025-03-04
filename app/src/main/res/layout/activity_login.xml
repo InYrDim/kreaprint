@@ -54,10 +54,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:fontFamily="@font/font_content"
+            android:fontFamily="@font/font_title"
             android:text="Login to your account"
             android:textColor="@android:color/white"
-            android:textSize="20sp"
+            android:textSize="28sp"
             android:textStyle="bold" />
     </FrameLayout>
 

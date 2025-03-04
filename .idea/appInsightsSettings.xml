@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.example.kreaprint" />
+                  <option name="mobileSdkAppId" value="1:30457738574:android:270dd554c75e54aedada1f" />
+                  <option name="projectId" value="kreaprint-558bd" />
+                  <option name="projectNumber" value="30457738574" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

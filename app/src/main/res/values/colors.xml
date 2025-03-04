@@ -7,5 +7,10 @@
     <color name="accent_color_shade">#FF0A64C2</color>
     <color name="primary_color">#FF541D1D</color>
     <color name="text_color">#FFFCF7F7</color>
-    <color name="dark_text_color">#FF0D141C</color>
+    <color name="dark_text_color">#FF1B0D0D</color>
+
+<!--    Pesanan Status-->
+    <color name="order_status_done">#21B710</color>
+    <color name="order_status_ongoing">#FF5900</color>
+    <color name="order_status_cancelled">#B71010</color>
 </resources>

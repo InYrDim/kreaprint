@@ -55,8 +55,7 @@ public class RegisterActivity extends AppCompatActivity {
         String email = "admin@email.com";
         String password = "1234";
 
-        return editTextEmail.getText().toString().equals(email) &&
-                editTextPassword.getText().toString().equals(password);
+        return true;
     }
 }
 

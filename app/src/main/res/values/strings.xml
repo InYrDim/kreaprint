@@ -3,14 +3,23 @@
     <string name="brand_text">KreaPrint</string>
     <string name="loading_text">Loading</string>
 
-<!--    Splash Screen   -->
+    <!--    Splash Screen   -->
     <string name="greeting_splash">Cetak Apa Saja, Kapan Saja!</string>
     <string name="greeting_beranda">Cetak Apa Saja, Kapan Saja!</string>
     <string name="greeting_slogan">Pesan online, ambil langsung!</string>
 
-<!--    Main Menu Navigation -->
+    <!--    Main Menu Navigation -->
     <string name="beranda_navigation">Beranda</string>
     <string name="pesanan_navigation">Pesanan</string>
     <string name="profil_navigation">Profil</string>
+
+<!--    Beranda Section Title-->
+    <string name="text_print_products">Print Products</string>
+    <string name="text_hot_products">Hot Products</string>
+
+    <string name="text_promo_banner_description">Promo Banner Description</string>
+
+<!--    Services -->
+    <string name="tv_promo_text">50% off everything,\nends in 3 days.</string>
 
 </resources>
