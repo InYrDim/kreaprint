@@ -51,7 +51,10 @@ dependencies {
 
     //firebase
     implementation(platform("com.google.firebase:firebase-bom:33.10.0"))
+
+//    Fbase Dep....
     implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth")
 
 //    HTTP Services
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -60,5 +63,7 @@ dependencies {
 
     implementation("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
+
+    implementation("androidx.viewpager2:viewpager2:1.0.0")
 
 }

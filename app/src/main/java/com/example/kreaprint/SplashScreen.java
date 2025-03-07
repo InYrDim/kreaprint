@@ -3,28 +3,70 @@ package com.example.kreaprint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.example.kreaprint.helper.AuthHelper;
+
+import com.example.kreaprint.viewmodel.BerandaViewModel;
+import com.google.firebase.auth.FirebaseUser;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.Toast;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+import com.example.kreaprint.R;
+import com.example.kreaprint.helper.AuthHelper;
+import com.example.kreaprint.MainActivity;
+import com.example.kreaprint.LoginActivity;
+import com.google.firebase.auth.FirebaseUser;
 
 public class SplashScreen extends AppCompatActivity {
-    private static final int SPLASH_SCREEN_DELAY = 4000;
+    private AuthHelper authHelper;
+    private BerandaViewModel berandaViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.splash_screen_activity);
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
+        authHelper = new AuthHelper(this);
+        berandaViewModel = new ViewModelProvider(this).get(BerandaViewModel.class);
 
-                Intent mainIntent = new Intent(SplashScreen.this, RegisterActivity.class);
+        checkLoginStatus();
+    }
 
-                startActivity(mainIntent);
+    private void checkLoginStatus() {
+        FirebaseUser user = authHelper.getCurrentUser();
 
+        if (user == null) {
+            // Jika user belum login, pindah ke LoginActivity
+            Toast.makeText(this, "Silakan login terlebih dahulu.", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
+        }
+
+        // Jika user sudah login, mulai proses loading data
+        Toast.makeText(this, "Selamat datang kembali!", Toast.LENGTH_SHORT).show();
+        observeDataLoading();
+    }
+
+    private void observeDataLoading() {
+        berandaViewModel.isDataLoaded().observe(this, isLoaded -> {
+            if (isLoaded) {
+                // Setelah semua data selesai dimuat, pindah ke MainActivity
+                startActivity(new Intent(this, MainActivity.class));
                 finish();
             }
-        }, SPLASH_SCREEN_DELAY);
+        });
+
+        // Mulai load data setelah memastikan user login
+        berandaViewModel.loadAllData();
     }
 }
+

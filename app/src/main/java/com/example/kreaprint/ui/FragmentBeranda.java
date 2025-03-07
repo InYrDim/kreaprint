@@ -1,5 +1,6 @@
 package com.example.kreaprint.ui;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -19,6 +20,7 @@ import android.widget.Spinner;
 import com.example.kreaprint.R;
 import com.example.kreaprint.adapter.HotProductAdapter;
 import com.example.kreaprint.adapter.ProductAdapter;
+import com.example.kreaprint.helper.FirestoreHelper;
 import com.example.kreaprint.model.Product;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -34,7 +36,6 @@ public class FragmentBeranda extends Fragment {
     private ProductAdapter adapter;
     private HotProductAdapter hotProductAdapter;
     private List<Product> produkList, hotProdukList, filteredList;
-    private String[] kategoriArray = {"Semua", "Banner", "Kartu Nama", "Brosur", "Undangan"};
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -47,88 +48,107 @@ public class FragmentBeranda extends Fragment {
         recyclerView = view.findViewById(R.id.rv_products);
         hotRecyclerView = view.findViewById(R.id.rv_hot_products);
 
-//        produkList = new ArrayList<>();
-//        produkList.add(new Product("Banner", "https://i.ibb.co.com/Fq01cVGj/layanan-1.png", "Banner"));
-
-//      ManualWay
-//        produkList.add(new Product("Kartu Nama", R.drawable.layanan_1, "Kartu Nama"));
-//        produkList.add(new Product("Brosur", R.drawable.layanan_1, "Brosur"));
-//        produkList.add(new Product("Undangan", R.drawable.layanan_1, "Undangan"));
-//        produkList.add(new Product("Undangan", R.drawable.layanan_1, "Undangan"));
-//        produkList.add(new Product("Undangan", R.drawable.layanan_1, "Undangan"));
-//        produkList.add(new Product("Brosur", R.drawable.layanan_1, "Brosur"));
-
-//      ManualWay
-//        hotProdukList.add(new Product("Kartu Nama", R.drawable.layanan_1, "Kartu Nama"));
-//        hotProdukList.add(new Product("Brosur", R.drawable.layanan_1, "Brosur"));
-
+        FirestoreHelper firestoreHelper = new FirestoreHelper();
 
         hotProdukList = new ArrayList<>();
-        hotProdukList.add(new Product("Banner", "https://iili.io/33veckg.png", "Banner"));
-        hotProdukList.add(new Product("Undangan", "https://iili.io/33velpa.png", "Undangan"));
 
         hotProductAdapter = new HotProductAdapter(hotProdukList);
 
-//        Try Firebase
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        produkList = new ArrayList<>();
-        filteredList = new ArrayList<>();
-        adapter = new ProductAdapter(filteredList);
-
-// Atur adapter ke RecyclerView sebelum data di-load
-        recyclerView.setAdapter(adapter);
-
-        db.collection("products")
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    produkList.clear();
-                    for (DocumentSnapshot document : queryDocumentSnapshots) {
-                        String nama = document.getString("nama");
-                        String imageUrl = document.getString("imageUrl");
-                        String kategori = document.getString("kategori");
-
-                        Product product = new Product(nama, imageUrl, kategori);
-                        produkList.add(product);
-                    }
-
-                    // Setelah data Firestore diambil, update filteredList
-                    filteredList.clear();
-                    filteredList.addAll(produkList);
-
-                    // Pastikan adapter diberi tahu perubahan data
-                    adapter.notifyDataSetChanged();
-                })
-                .addOnFailureListener(e -> Log.e("Firestore", "Gagal mengambil data", e));
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        recyclerView.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.HORIZONTAL));
-        recyclerView.setAdapter(adapter);
-
-        hotRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         hotRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         hotRecyclerView.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.HORIZONTAL));
         hotRecyclerView.setAdapter(hotProductAdapter);
 
-        adapter.notifyItemInserted(produkList.size() - 1);
-
-        ArrayAdapter<String> adapterKategori = new ArrayAdapter<>(requireContext(),
-                android.R.layout.simple_spinner_item, kategoriArray);
-        adapterKategori.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        dropdownKategori.setAdapter(adapterKategori);
-
-        dropdownKategori.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        firestoreHelper.getHotProduct(5, new FirestoreHelper.FirestoreCallback<List<Product>>() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedKategori = kategoriArray[position];
-                filterProduk(selectedKategori);
-            }
+            public void onCallback(List<Product> produkList) {
+                if (produkList.isEmpty()) {
+                    Log.d("FirestoreData", "Tidak ada produk terlaris ditemukan.");
+                }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+                hotProdukList.clear();
+                hotProdukList.addAll(produkList);
+
+                requireActivity().runOnUiThread(() -> hotProductAdapter.notifyDataSetChanged());
             }
         });
+
+        produkList = new ArrayList<>();
+        filteredList = new ArrayList<>();
+        adapter = new ProductAdapter(filteredList);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        recyclerView.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.HORIZONTAL));
+        recyclerView.setAdapter(adapter);
+
+        firestoreHelper.getAllProduct(new FirestoreHelper.FirestoreCallback<List<Product>>() {
+            @Override
+            public void onCallback(List<Product> products) {
+                if (products.isEmpty()) {
+                    Log.d("FirestoreData", "Tidak ada produk terlaris ditemukan.");
+                }
+
+                produkList.clear();
+                produkList.addAll(products);
+
+                requireActivity().runOnUiThread(() -> hotProductAdapter.notifyDataSetChanged());
+            }
+        });
+
+        adapter.notifyItemInserted(produkList.size() - 1);
+
+        firestoreHelper.getAllCategories(kategoriList -> {
+            // Logging kategoriList untuk memastikan data masuk
+            Log.d("Firestore", "Kategori dari Firestore: " + kategoriList);
+
+            List<String> kategoriNamaList = new ArrayList<>();
+            kategoriNamaList.add("Semua");
+
+            kategoriNamaList.addAll(kategoriList);
+
+            ArrayAdapter<String> adapterKategori = new ArrayAdapter<>(requireContext(),
+                    android.R.layout.simple_spinner_item, kategoriNamaList);
+            adapterKategori.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+            dropdownKategori.setAdapter(adapterKategori);
+
+            dropdownKategori.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    String selectedKategori = kategoriNamaList.get(position);
+                    Log.d("Firestore", "Kategori dipilih: " + selectedKategori);
+                    filterProduk(selectedKategori);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
+            });
+        });
+
+
+
+
+//        Spinner
+
+
+//        ------
+//        ArrayAdapter<String> adapterKategori = new ArrayAdapter<>(requireContext(),
+//                android.R.layout.simple_spinner_item, kategoriArray);
+//        adapterKategori.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//
+//        dropdownKategori.setAdapter(adapterKategori);
+//
+//        dropdownKategori.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                String selectedKategori = kategoriArray[position];
+//                filterProduk(selectedKategori);
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//            }
+//        });
 
         return view;
     }
