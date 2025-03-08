@@ -17,7 +17,7 @@ import java.util.Map;
 public class FirestoreHelper {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    public void tambahUserKeFirestore(String userId, String email, String username, FirestoreCallback<Boolean> callback) {
+    public void addUser(String userId, String email, String username, FirestoreCallback<Boolean> callback) {
         Map<String, Object> userMap = new HashMap<>();
         userMap.put("email", email);
         userMap.put("username", username);
@@ -31,17 +31,16 @@ public class FirestoreHelper {
                 });
     }
 
-
-    // 🔹 Menambahkan data produk awal ke Firestore
-    // 🔹 Method dinamis untuk menambahkan produk ke Firestore
-
-    public void tambahProdukKeFirestore(List<Product> produkList) {
+    public void addProduct(List<Product> produkList) {
         for (Product produk : produkList) {
             Map<String, Object> produkMap = new HashMap<>();
             produkMap.put("nama", produk.getNama());
             produkMap.put("imageUrl", produk.getImageUrl());
             produkMap.put("kategori", produk.getKategori());
-            produkMap.put("jumlah_order", 0);
+            produkMap.put("jumlah_order", produk.getJumlahOrder());
+            produkMap.put("deskripsi", produk.getDeskripsi());
+            produkMap.put("tips", produk.getTips());
+            produkMap.put("harga", produk.getHarga());
 
             db.collection("products")
                     .document(produk.getNama())
@@ -49,7 +48,7 @@ public class FirestoreHelper {
         }
     }
 
-    public void tambahKategoriKeFirestore(List<String> kategoriList) {
+    public void addCategory(List<String> kategoriList) {
         for (String kategori : kategoriList) {
             Map<String, Object> kategoriMap = new HashMap<>();
             kategoriMap.put("nama", kategori);
@@ -60,12 +59,7 @@ public class FirestoreHelper {
         }
     }
 
-
-
-
-
-    // 🔹 Menambahkan pesanan dan update jumlah order produk
-    public void tambahPesanan(String kategori, String produkId, int jumlah) {
+    public void addOrder(String kategori, String produkId, int jumlah) {
         // Data pesanan
         Map<String, Object> orderData = new HashMap<>();
         orderData.put("produk_id", produkId);
@@ -89,11 +83,9 @@ public class FirestoreHelper {
         });
     }
 
-    // 🔹 Mengambil produk dengan order terbanyak
     public interface FirestoreCallback<T> {
         void onCallback(T data);
     }
-
 
     public void getHotProduct(int limit, FirestoreCallback<List<Product>> callback) {
         db.collection("products")
@@ -149,7 +141,6 @@ public class FirestoreHelper {
         void onCallback(List<String> kategoriList);
     }
 
-    // 🔹 Mengambil semua kategori dari database
     public void getAllCategories(CategoryCallback callback) {
         db.collection("categories").get()
                 .addOnCompleteListener(task -> {
@@ -163,5 +154,24 @@ public class FirestoreHelper {
                     }
                 });
     }
+
+    public void getProductById(String productId, FirestoreCallback<Product> callback) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("products").document(productId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        Product product = documentSnapshot.toObject(Product.class);
+                        callback.onCallback(product);
+                    } else {
+                        callback.onCallback(null);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firestore", "Gagal mengambil produk: " + e.getMessage());
+                    callback.onCallback(null);
+                });
+    }
+
 }
 

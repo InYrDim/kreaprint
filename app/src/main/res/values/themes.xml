@@ -3,6 +3,7 @@
     <style name="Base.Theme.Kreaprint" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your light theme here. -->
         <item name="colorPrimary">@color/primary_color</item>
+        <item name="fontFamily">@font/font_content</item>
         <item name="android:fontFamily">@font/font_content</item>
     </style>
     

@@ -11,6 +11,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.kreaprint.helper.AuthHelper;
 
+import com.example.kreaprint.helper.FirestoreHelper;
+import com.example.kreaprint.model.Product;
 import com.example.kreaprint.viewmodel.BerandaViewModel;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -25,6 +27,9 @@ import com.example.kreaprint.MainActivity;
 import com.example.kreaprint.LoginActivity;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SplashScreen extends AppCompatActivity {
     private AuthHelper authHelper;
     private BerandaViewModel berandaViewModel;
@@ -33,6 +38,8 @@ public class SplashScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash_screen_activity);
+
+        addData();
 
         authHelper = new AuthHelper(this);
         berandaViewModel = new ViewModelProvider(this).get(BerandaViewModel.class);
@@ -67,6 +74,14 @@ public class SplashScreen extends AppCompatActivity {
 
         // Mulai load data setelah memastikan user login
         berandaViewModel.loadAllData();
+    }
+
+    private void addData() {
+        FirestoreHelper helper = new FirestoreHelper();
+        List productList = new ArrayList();
+        productList.add(new Product("Stiker glossy atau doff", "Stiker & Cutting", "", 0, "", 0, ""));
+
+        helper.addProduct(productList);
     }
 }
 

@@ -6,13 +6,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.kreaprint.R;
+import com.example.kreaprint.helper.ImageLoaderHelper;
 import com.example.kreaprint.model.Pesanan;
 import java.util.List;
 
@@ -35,14 +35,15 @@ public class PesananAdapter extends RecyclerView.Adapter<PesananAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Pesanan pesanan = pesananList.get(position);
-        holder.tvNama.setText(pesanan.getNama());
+        holder.tvNama.setText(pesanan.getProdukNama());
         holder.tvKategori.setText(pesanan.getKategori());
         holder.tvStatusPesanan.setText(pesanan.getStatusPesanan());
 
-        // Load gambar menggunakan Glide
-        Glide.with(context)
-                .load(pesanan.getImageUrl())
-                .into(holder.ivProduct);
+        ImageLoaderHelper.loadImage(
+            context,
+            pesanan.getProdukImageUrl(),
+            holder.ivProduct
+        );
 
         Animation animation = AnimationUtils.loadAnimation(holder.itemView.getContext(), R.anim.pop_up);
 

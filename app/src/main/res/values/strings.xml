@@ -1,7 +1,27 @@
 <resources>
+
+    <!--    General-->
     <string name="app_name">kreaprint</string>
     <string name="brand_text">KreaPrint</string>
     <string name="loading_text">Loading</string>
+
+    <!--    Icons-->
+    <string name="desc_text_google_btn">Google Icon</string>
+
+    <!--    Register/Login Activity-->
+    <string name="text_fullname">Fullname</string>
+    <string name="text_email">Email</string>
+    <string name="text_password">Password</string>
+    <string name="text_login">Login</string>
+
+    <string name="text_reg_heading">Create an account</string>
+    <string name="btn_text_reg">Sign Up</string>
+    <string name="desc_text_reg">By signing up, you agree to our Terms and Privacy Policy.</string>
+    <string name="text_already_have">Saya memiliki akun </string>
+
+    <string name="text_login_heading">Create an account</string>
+    <string name="btn_text_login">Sign Up</string>
+    <string name="desc_text_login">By signing up, you agree to our Terms and Privacy Policy.</string>
 
     <!--    Splash Screen   -->
     <string name="greeting_splash">Cetak Apa Saja, Kapan Saja!</string>
@@ -23,5 +43,6 @@
     <string name="tv_promo_text">50% off everything,\nends in 3 days.</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
 
 </resources>

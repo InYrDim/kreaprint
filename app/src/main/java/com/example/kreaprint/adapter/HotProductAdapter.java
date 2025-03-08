@@ -11,13 +11,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.kreaprint.R;
+import com.example.kreaprint.helper.ImageLoaderHelper;
+import com.example.kreaprint.model.Pesanan;
 import com.example.kreaprint.model.Product;
 
 import java.util.List;
 
 public class HotProductAdapter extends RecyclerView.Adapter<HotProductAdapter.ViewHolder> {
     private List<Product> produkList;
-
+    private OnItemClickListener listener;
     public HotProductAdapter(List<Product> produkList) {
         this.produkList = produkList;
     }
@@ -34,15 +36,28 @@ public class HotProductAdapter extends RecyclerView.Adapter<HotProductAdapter.Vi
         Product produk = produkList.get(position);
         holder.tvNama.setText(produk.getNama());
 
-//        holder.imgProduct.setImageResource(produk.getImageResId());
-//        USING GLIDE FOR READING URL:
-        Glide.with(holder.itemView.getContext())
-                .load(produk.getImageUrl())  // URL dari produk
-                .placeholder(R.drawable.bg_promo_text) // Placeholder jika gambar belum dimuat
-                .error(R.drawable.layanan_1) // Gambar default jika gagal memuat
-                .into(holder.imgProduct); // Masukkan ke ImageView
+        ImageLoaderHelper.loadImage(
+                holder.itemView.getContext(),
+                produk.getImageUrl(),
+                holder.imgProduct
+        );
+
+        // Tambahkan event klik pada item
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onItemClick(produk);
+            }
+        });
+    }
 
 
+
+    public interface OnItemClickListener {
+        void onItemClick(Product product);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
     }
 
     @Override

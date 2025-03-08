@@ -1,6 +1,7 @@
 package com.example.kreaprint.ui;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -17,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import com.example.kreaprint.ProductDetailActivity;
 import com.example.kreaprint.R;
 import com.example.kreaprint.adapter.HotProductAdapter;
 import com.example.kreaprint.adapter.ProductAdapter;
@@ -54,6 +56,12 @@ public class FragmentBeranda extends Fragment {
 
         hotProductAdapter = new HotProductAdapter(hotProdukList);
 
+        hotProductAdapter.setOnItemClickListener(product -> {
+            Intent intent = new Intent(getContext(), ProductDetailActivity.class);
+            intent.putExtra("product_id", product.getNama()); // Kirim ID produk ke activity detail
+            startActivity(intent);
+        });
+
         hotRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         hotRecyclerView.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.HORIZONTAL));
         hotRecyclerView.setAdapter(hotProductAdapter);
@@ -71,10 +79,16 @@ public class FragmentBeranda extends Fragment {
                 requireActivity().runOnUiThread(() -> hotProductAdapter.notifyDataSetChanged());
             }
         });
-
+//------------------------------------------
         produkList = new ArrayList<>();
         filteredList = new ArrayList<>();
         adapter = new ProductAdapter(filteredList);
+
+        adapter.setOnItemClickListener(product -> {
+            Intent intent = new Intent(getContext(), ProductDetailActivity.class);
+            intent.putExtra("product_id", product.getNama()); // Kirim ID produk ke activity detail
+            startActivity(intent);
+        });
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.HORIZONTAL));
@@ -125,30 +139,6 @@ public class FragmentBeranda extends Fragment {
             });
         });
 
-
-
-
-//        Spinner
-
-
-//        ------
-//        ArrayAdapter<String> adapterKategori = new ArrayAdapter<>(requireContext(),
-//                android.R.layout.simple_spinner_item, kategoriArray);
-//        adapterKategori.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//
-//        dropdownKategori.setAdapter(adapterKategori);
-//
-//        dropdownKategori.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                String selectedKategori = kategoriArray[position];
-//                filterProduk(selectedKategori);
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> parent) {
-//            }
-//        });
 
         return view;
     }

@@ -13,13 +13,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.kreaprint.R;
+import com.example.kreaprint.helper.ImageLoaderHelper;
 import com.example.kreaprint.model.Product;
 
 import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
     private List<Product> produkList;
-
+    private HotProductAdapter.OnItemClickListener listener;
     public ProductAdapter(List<Product> produkList) {
         this.produkList = produkList;
     }
@@ -35,20 +36,29 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Product produk = produkList.get(position);
         holder.tvNama.setText(produk.getNama());
-//        holder.imgProduct.setImageResource(produk.getImageResId());
 
-//        USING GLIDE FOR READING URL:
-        Glide.with(holder.itemView.getContext())
-                .load(produk.getImageUrl())  // URL dari produk
-                .placeholder(R.drawable.bg_promo_text) // Placeholder jika gambar belum dimuat
-                .error(R.drawable.layanan_1) // Gambar default jika gagal memuat
-                .into(holder.imgProduct); // Masukkan ke ImageView
-
+        ImageLoaderHelper.loadImage(
+                holder.itemView.getContext(),
+                produk.getImageUrl(),
+                holder.imgProduct
+        );
 
         Animation animation = AnimationUtils.loadAnimation(holder.itemView.getContext(), R.anim.pop_up);
-
         holder.itemView.startAnimation(animation);
 
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onItemClick(produk);
+            }
+        });
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(Product product);
+    }
+
+    public void setOnItemClickListener(HotProductAdapter.OnItemClickListener listener) {
+        this.listener = listener;
     }
 
     @Override

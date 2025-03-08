@@ -19,6 +19,7 @@ import com.example.kreaprint.viewmodel.PesananViewModel;
 import com.example.kreaprint.LoginActivity;
 
 import java.util.Random;
+import java.util.UUID;
 
 public class FragmentProfil extends Fragment {
     private Button btnLogout;
@@ -53,11 +54,32 @@ public class FragmentProfil extends Fragment {
         String[] Category = {"Semua", "Banner", "Kartu Nama", "Brosur", "Undangan"};
         String[] Status = {"Sedang Diproses", "Selesai"};
         String[] ImageUrls = {"https://iili.io/33veckg.png", "https://iili.io/33velpa.png"};
+        String[] MetodePembayaran = {"Transfer Bank", "E-Wallet", "COD"};
 
         Random rand = new Random();
 
+        // Simulasi ID dan Data Dummy
+        String id = UUID.randomUUID().toString(); // Buat ID unik
+        String userId = "user123"; // Simulasi user ID
+        String produkId = "produk123"; // Simulasi produk ID
+        String produkNama = "Kartu Nama";
+        String produkImageUrl = ImageUrls[rand.nextInt(ImageUrls.length)];
+        String kategori = Category[rand.nextInt(Category.length)];
+        int jumlah = rand.nextInt(10) + 1; // Jumlah acak 1-10
+        double totalHarga = jumlah * 5000; // Simulasi harga per item
+        String statusPesanan = Status[rand.nextInt(Status.length)];
+        long tanggalPemesanan = System.currentTimeMillis(); // Timestamp saat ini
+        String metodePembayaran = MetodePembayaran[rand.nextInt(MetodePembayaran.length)];
+
+        // Buat objek Pesanan dengan semua atribut
+        Pesanan newPesanan = new Pesanan(
+                id, userId, produkId, produkNama, produkImageUrl, kategori,
+                jumlah, totalHarga, statusPesanan, tanggalPemesanan, metodePembayaran
+        );
+
+        // Tambahkan pesanan ke ViewModel
         PesananViewModel pesananViewModel = new ViewModelProvider(requireActivity()).get(PesananViewModel.class);
-        Pesanan newPesanan = new Pesanan("Kartu Nama", ImageUrls[rand.nextInt(ImageUrls.length)], Category[rand.nextInt(Category.length)], Status[rand.nextInt(Status.length)]);
         pesananViewModel.tambahPesanan(newPesanan);
     }
+
 }
