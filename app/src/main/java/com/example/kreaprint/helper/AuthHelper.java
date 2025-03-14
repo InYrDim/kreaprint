@@ -25,10 +25,10 @@ public class AuthHelper {
     private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
     private static final String KEY_USER_ID = "userId";
 
-    private FirebaseAuth auth;
-    private SharedPreferences prefs;
-    private SharedPreferences.Editor editor;
-    private Context context;
+    public final FirebaseAuth auth;
+    private final SharedPreferences prefs;
+    private final SharedPreferences.Editor editor;
+    private final Context context;
 
 
     public AuthHelper(Context context) {
@@ -38,8 +38,6 @@ public class AuthHelper {
         this.editor = prefs.edit();
     }
 
-
-    // 🔹 Cek apakah user sudah login
     public boolean isLoggedIn() {
         // Read from SharedPreferences
         boolean isSessionStored = prefs.getBoolean(KEY_IS_LOGGED_IN, false)
@@ -97,52 +95,6 @@ public class AuthHelper {
         Intent intent = new Intent(context, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(intent);
-    }
-
-//
-//    public void checkLoginStatus() {
-//        FirebaseUser user = auth.getCurrentUser();
-//
-//        if (user != null && isLoggedIn()) {
-//            // User sudah login, masuk ke Dashboard
-//            context.startActivity(new Intent(context, FragmentBeranda.class));
-//        } else {
-//            // User belum login, masuk ke halaman Login
-//            context.startActivity(new Intent(context, LoginActivity.class));
-//        }
-//    }
-
-    public void loginUser(String email, String password, AuthCallback callback) {
-        auth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        FirebaseUser user = auth.getCurrentUser();
-                        if (user != null) {
-                            saveUserSession(user.getUid());
-                            callback.onSuccess(user);
-                        }
-                    } else {
-                        callback.onFailure(task.getException());
-                    }
-                });
-    }
-
-
-
-
-    public void registerUser(String email, String password, AuthCallback callback) {
-        auth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        FirebaseUser user = auth.getCurrentUser();
-                        if (user != null) {
-                            saveUserSession(user.getUid());
-                            callback.onSuccess(user);
-                        }
-                    } else {
-                        callback.onFailure(task.getException());
-                    }
-                });
     }
 
 

@@ -35,10 +35,10 @@ public class FirestoreHelper {
 
         userRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful() && task.getResult().exists()) {
-                // User sudah ada, tidak perlu ditambahkan lagi
+
                 Log.d(TAG, "User already exists in Firestore");
             } else {
-                // User baru, buat objek User dan simpan ke Firestore
+
                 User newUser = new User();
                 newUser.setId(user.getUid());
                 newUser.setNama(user.getDisplayName());

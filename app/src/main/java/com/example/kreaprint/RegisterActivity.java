@@ -1,6 +1,5 @@
 package com.example.kreaprint;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
@@ -16,15 +15,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.credentials.exceptions.GetCredentialCancellationException;
 import androidx.credentials.exceptions.GetCredentialException;
 
+import com.example.kreaprint.helper.AuthHelper;
+import com.example.kreaprint.helper.FirestoreHelper;
 import com.example.kreaprint.helper.GoogleSignInHelper;
+import com.example.kreaprint.helper.PasswordSignInHelper;
 import com.google.firebase.auth.FirebaseUser;
 
 public class RegisterActivity extends AppCompatActivity {
-    private EditText editTextEmail, editTextPassword, editTextUsername;
+    private EditText editTextEmail, editTextPassword, editTextDisplayname;
 
+    private boolean isPasswordVisible = false;
     private static final String TAG = "GoogleSignInHelper";
     private ImageView ivTogglePassword;
     private ImageView googleSignInButton;
+
+    private AuthHelper authHelper;
     private GoogleSignInHelper googleSignInHelper;
 
     @Override
@@ -34,6 +39,13 @@ public class RegisterActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_register);
 
+        authHelper = new AuthHelper(this);
+
+
+        editTextEmail = findViewById(R.id.reg_email);
+        editTextPassword = findViewById(R.id.reg_password);
+        editTextDisplayname = findViewById(R.id.reg_username);
+        ivTogglePassword = findViewById(R.id.iv_reg_toggle_password);
 
         registerWithPassword();
 
@@ -41,6 +53,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         loginInsteadRegister();
 
+        ivTogglePassword.setOnClickListener(v -> togglePasswordVisibility());
     }
 
     private void loginInsteadRegister() {
@@ -55,24 +68,51 @@ public class RegisterActivity extends AppCompatActivity {
     }
     private void registerWithPassword() {
 
-        editTextEmail = findViewById(R.id.reg_email);
-        editTextPassword = findViewById(R.id.reg_password);
-        editTextUsername = findViewById(R.id.reg_username);
-
         Button btnRegister = findViewById(R.id.btn_signup);
-
+        PasswordSignInHelper passwordSignInHelper = new PasswordSignInHelper(authHelper);
 
         btnRegister.setOnClickListener(v -> {
-            if (isValidLogin()) {
-                Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-            } else {
-                Toast.makeText(this, "Login gagal!", Toast.LENGTH_SHORT).show();
-            }
+            String email = editTextEmail.getText().toString().trim();
+            String password = editTextPassword.getText().toString().trim();
+            String displayName = editTextDisplayname.getText().toString().trim();
+
+            passwordSignInHelper.registerWithPassword(email, password, displayName, new PasswordSignInHelper.AuthCallback() {
+                @Override
+                public void onLoginStart() {
+                    btnRegister.setEnabled(false);
+                    Toast.makeText(RegisterActivity.this, "Mendaftarkan...", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onLoginSuccess(FirebaseUser user) {
+                    FirestoreHelper firestoreHelper = new FirestoreHelper();
+                    firestoreHelper.saveUserToFirestore(user);
+
+                    Toast.makeText(RegisterActivity.this, "Registrasi berhasil! Selamat datang, " + user.getDisplayName(), Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(RegisterActivity.this, MainActivity.class));
+                    finish();
+                }
+
+                @Override
+                public void onLoginFailure(Exception e) {
+                    btnRegister.setEnabled(true);
+                    Toast.makeText(RegisterActivity.this, "Registrasi gagal: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
         });
     }
 
+    private void togglePasswordVisibility() {
+        if (isPasswordVisible) {
+            editTextPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            ivTogglePassword.setImageResource(R.drawable.eye_closed);
+        } else {
+            editTextPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            ivTogglePassword.setImageResource(R.drawable.eye_open);
+        }
+        isPasswordVisible = !isPasswordVisible;
+        editTextPassword.setSelection(editTextPassword.getText().length());
+    }
     private void registerWithGoogle() {
         googleSignInButton = findViewById(R.id.btn_continue_with_google);
         googleSignInHelper = new GoogleSignInHelper(this, getString(R.string.default_web_client_id),  new GoogleSignInHelper.GoogleSignInCallback() {
@@ -120,12 +160,6 @@ public class RegisterActivity extends AppCompatActivity {
             googleSignInButton.setAlpha(1.0f);
             googleSignInButton.setImageResource(R.drawable.google_logo_android_neutral_rd_ctn);
         });
-    }
-    private boolean isValidLogin() {
-
-
-
-        return true;
     }
 }
 

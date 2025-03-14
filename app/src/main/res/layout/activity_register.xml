@@ -115,7 +115,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp">
-
             <EditText
                 android:id="@+id/reg_password"
                 android:layout_width="match_parent"
@@ -127,6 +126,18 @@
                 android:padding="16dp"
                 android:textColor="@android:color/white"
                 android:textColorHint="#BDBDBD" />
+
+            <ImageView
+                android:id="@+id/iv_reg_toggle_password"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="10dp"
+                android:contentDescription="Toggle Password Visibility"
+                app:srcCompat="@drawable/eye_closed" />
+
+
 
         </RelativeLayout>
 
