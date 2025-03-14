@@ -1,6 +1,5 @@
 package com.example.kreaprint;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
@@ -10,7 +9,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.credentials.exceptions.GetCredentialCancellationException;
@@ -19,6 +17,7 @@ import androidx.credentials.exceptions.GetCredentialException;
 import com.example.kreaprint.helper.AuthHelper;
 import com.example.kreaprint.helper.GoogleSignInHelper;
 import com.example.kreaprint.helper.PasswordSignInHelper;
+import com.example.kreaprint.helper.ToastHelper;
 import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
@@ -26,6 +25,8 @@ public class LoginActivity extends AppCompatActivity {
     private ImageView ivTogglePassword, googleSignInButton;
 
     private Button btnLogin;
+
+    private ToastHelper loginToast;
 
     private boolean isPasswordVisible = false;
     private AuthHelper authHelper;
@@ -40,6 +41,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         authHelper = new AuthHelper(this);
+        loginToast = new ToastHelper(this);
 
         TextView goRegister = findViewById(R.id.href_register);
         editTextEmail = findViewById(R.id.log_email);
@@ -70,7 +72,9 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onSignInSuccess(FirebaseUser user) {
                 resetGoogleButtonState();
-                Toast.makeText(LoginActivity.this, "Sign-in successful", Toast.LENGTH_SHORT).show();
+
+                loginToast.showToast("Sign-in successful", ToastHelper.ToastType.INFO);
+
                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 finish();
             }
@@ -79,9 +83,9 @@ public class LoginActivity extends AppCompatActivity {
             public void onSignInFailure(Exception e) {
                 resetGoogleButtonState();
                 if (e instanceof GetCredentialCancellationException) {
-                    Toast.makeText(LoginActivity.this, "Sign-in canceled by user", Toast.LENGTH_SHORT).show();
+                    loginToast.showToast("Sign-in canceled by user", ToastHelper.ToastType.WARNING);
                 } else {
-                    Toast.makeText(LoginActivity.this, "Sign-in failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    loginToast.showToast("Sign-in failed: " + e.getMessage(), ToastHelper.ToastType.ERROR);
                 }
             }
 
@@ -122,14 +126,18 @@ public class LoginActivity extends AppCompatActivity {
 
                 @Override
                 public void onLoginSuccess(FirebaseUser user) {
-                    Toast.makeText(LoginActivity.this, "Login Berhasil!", Toast.LENGTH_SHORT).show();
+                    loginToast.cancelToast();
+                    loginToast.showToast("Login Berhasil!", ToastHelper.ToastType.SUCCESS);
+
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                     finish();
                 }
 
                 @Override
                 public void onLoginFailure(Exception e) {
-                    Toast.makeText(LoginActivity.this, "Login Gagal: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    loginToast.cancelToast();
+                    loginToast.showToast("Login Gagal: " + e.getMessage(), ToastHelper.ToastType.ERROR);
+
                     btnLogin.setEnabled(true);
                     btnLogin.setText(R.string.text_login);
                 }

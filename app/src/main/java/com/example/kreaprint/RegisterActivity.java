@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.credentials.exceptions.GetCredentialCancellationException;
@@ -19,6 +18,7 @@ import com.example.kreaprint.helper.AuthHelper;
 import com.example.kreaprint.helper.FirestoreHelper;
 import com.example.kreaprint.helper.GoogleSignInHelper;
 import com.example.kreaprint.helper.PasswordSignInHelper;
+import com.example.kreaprint.helper.ToastHelper;
 import com.google.firebase.auth.FirebaseUser;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -29,6 +29,7 @@ public class RegisterActivity extends AppCompatActivity {
     private ImageView ivTogglePassword;
     private ImageView googleSignInButton;
 
+    private ToastHelper registeringToast;
     private AuthHelper authHelper;
     private GoogleSignInHelper googleSignInHelper;
 
@@ -40,7 +41,7 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         authHelper = new AuthHelper(this);
-
+        registeringToast = new ToastHelper(this);
 
         editTextEmail = findViewById(R.id.reg_email);
         editTextPassword = findViewById(R.id.reg_password);
@@ -80,15 +81,21 @@ public class RegisterActivity extends AppCompatActivity {
                 @Override
                 public void onLoginStart() {
                     btnRegister.setEnabled(false);
-                    Toast.makeText(RegisterActivity.this, "Mendaftarkan...", Toast.LENGTH_SHORT).show();
+                    btnRegister.setText(R.string.loading_text);
+
+                    registeringToast = new ToastHelper(RegisterActivity.this);
+                    registeringToast.showToast("Mendaftarkan...");
                 }
 
                 @Override
                 public void onLoginSuccess(FirebaseUser user) {
+                    registeringToast.cancelToast(); // Cancel previous toast
+                    registeringToast.showToast("Registrasi berhasil!");
+
                     FirestoreHelper firestoreHelper = new FirestoreHelper();
                     firestoreHelper.saveUserToFirestore(user);
 
-                    Toast.makeText(RegisterActivity.this, "Registrasi berhasil! Selamat datang, " + user.getDisplayName(), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(RegisterActivity.this, "Registrasi berhasil! Selamat datang, " + user.getDisplayName(), Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(RegisterActivity.this, MainActivity.class));
                     finish();
                 }
@@ -96,7 +103,10 @@ public class RegisterActivity extends AppCompatActivity {
                 @Override
                 public void onLoginFailure(Exception e) {
                     btnRegister.setEnabled(true);
-                    Toast.makeText(RegisterActivity.this, "Registrasi gagal: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    btnRegister.setText(R.string.btn_text_reg);
+
+                    registeringToast.cancelToast(); // Cancel previous toast
+                    registeringToast.showToast("Registrasi gagal: " + e.getMessage(), ToastHelper.ToastType.ERROR);
                 }
             });
         });
@@ -119,7 +129,9 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onSignInSuccess(FirebaseUser user) {
                 resetGoogleButtonState();
-                Toast.makeText(RegisterActivity.this, "Sign-in successful", Toast.LENGTH_SHORT).show();
+
+                registeringToast.showToast("Sign-in successful");
+
                 startActivity(new Intent(RegisterActivity.this, MainActivity.class));
                 finish();
             }
@@ -127,10 +139,13 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onSignInFailure(Exception e) {
                 resetGoogleButtonState();
+
+                registeringToast.cancelToast();
+
                 if (e instanceof GetCredentialCancellationException) {
-                    Toast.makeText(RegisterActivity.this, "Sign-in canceled by user", Toast.LENGTH_SHORT).show();
+                    registeringToast.showToast("Sign-in canceled by user", ToastHelper.ToastType.WARNING);
                 } else {
-                    Toast.makeText(RegisterActivity.this, "Sign-in failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    registeringToast.showToast("Sign-in failed: " + e.getMessage(), ToastHelper.ToastType.ERROR);
                 }
             }
 

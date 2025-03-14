@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.example.kreaprint.R;
 import com.example.kreaprint.helper.AuthHelper;
 import com.example.kreaprint.helper.GoogleSignInHelper;
+import com.example.kreaprint.helper.ToastHelper;
 import com.example.kreaprint.model.Pesanan;
 import com.example.kreaprint.viewmodel.PesananViewModel;
 import com.example.kreaprint.LoginActivity;
@@ -27,17 +28,19 @@ import java.util.UUID;
 public class FragmentProfil extends Fragment {
     private Button btnLogout;
 
+    private ToastHelper profileToast;
     private String userId;
 
     private static final String TAG = "GoogleSignInHelper";
-    private AuthHelper authHelper; // Tambahkan AuthHelper
+    private AuthHelper authHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profil, container, false);
 
-        authHelper = new AuthHelper(requireContext()); // Inisialisasi AuthHelper
+        authHelper = new AuthHelper(requireContext());
+        profileToast = new ToastHelper(requireContext());
 
         TextView name = view.findViewById(R.id.tv_username);
 
@@ -65,7 +68,9 @@ public class FragmentProfil extends Fragment {
 
         googleSignInHelper.signOut(() -> {
             if (isAdded() && getContext() != null) { // Ensure fragment is still attached
-                Toast.makeText(getContext(), "Signed out successfully", Toast.LENGTH_SHORT).show();
+
+                profileToast.showToast("Signed out successfully");
+
                 startActivity(new Intent(getActivity(), LoginActivity.class));
                 if (getActivity() != null) {
                     getActivity().finish();
