@@ -48,9 +48,8 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     private void checkLoginStatus() {
-        FirebaseUser user = authHelper.getCurrentUser();
 
-        if (user == null) {
+        if (!authHelper.isLoggedIn()) {
             // Jika user belum login, pindah ke LoginActivity
             Toast.makeText(this, "Silakan login terlebih dahulu.", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this, LoginActivity.class));

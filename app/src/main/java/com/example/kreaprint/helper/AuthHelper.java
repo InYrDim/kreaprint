@@ -41,7 +41,27 @@ public class AuthHelper {
 
     // 🔹 Cek apakah user sudah login
     public boolean isLoggedIn() {
-        return prefs.getBoolean(KEY_IS_LOGGED_IN, false) || prefs.getBoolean(KEY_USER_ID, false);
+        // Read from SharedPreferences
+        boolean isSessionStored = prefs.getBoolean(KEY_IS_LOGGED_IN, false)
+                || (prefs.contains(KEY_USER_ID) && !prefs.getString(KEY_USER_ID, "").isEmpty());
+
+        Log.d("SignIn", "Session Stored in Prefs: " + isSessionStored);
+
+        // If no session found in prefs, check Firebase Authentication
+        if (!isSessionStored) {
+            Log.d("SignIn", "No session in prefs, checking Firebase Auth...");
+            return isFirebaseAuthUserLoggedIn();
+        }
+
+        // If session is found in SharedPreferences, return true
+        Log.d("SignIn", "User session found in prefs.");
+        return true;
+    }
+
+
+    public boolean isFirebaseAuthUserLoggedIn() {
+        FirebaseUser user = this.getCurrentUser();
+        return user != null; // ✅ Returns true if user is logged in
     }
 
 
@@ -56,6 +76,13 @@ public class AuthHelper {
         editor.apply();
     }
 
+    public void clearUserLogin() {
+        Log.d("Authentication", "Cleared Session on shared preference");
+        editor.remove(KEY_IS_LOGGED_IN);
+        editor.remove(KEY_USER_ID);
+        editor.apply();
+    }
+
 
     public String getUserId() {
         return prefs.getString(KEY_USER_ID, null);
@@ -63,8 +90,7 @@ public class AuthHelper {
 
 
     public void logoutUser() {
-        editor.clear();
-        editor.apply();
+        this.clearUserLogin();
         auth.signOut();
 
 
