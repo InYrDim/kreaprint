@@ -6,14 +6,17 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kreaprint.R;
 import com.example.kreaprint.helper.AuthHelper;
+import com.example.kreaprint.helper.GoogleSignInHelper;
 import com.example.kreaprint.model.Pesanan;
 import com.example.kreaprint.viewmodel.PesananViewModel;
 import com.example.kreaprint.LoginActivity;
@@ -23,6 +26,10 @@ import java.util.UUID;
 
 public class FragmentProfil extends Fragment {
     private Button btnLogout;
+
+    private String userId;
+
+    private static final String TAG = "GoogleSignInHelper";
     private AuthHelper authHelper; // Tambahkan AuthHelper
 
     @Override
@@ -31,6 +38,17 @@ public class FragmentProfil extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profil, container, false);
 
         authHelper = new AuthHelper(requireContext()); // Inisialisasi AuthHelper
+
+        TextView name = view.findViewById(R.id.tv_username);
+
+        if(authHelper.isLoggedIn()) {
+            userId = authHelper.getUserId();
+            Log.d("SignIn", String.valueOf(authHelper.isLoggedIn()));
+        } {
+            userId = authHelper.getCurrentUser().getUid();
+        }
+
+        name.setText(userId);
 
         btnLogout = view.findViewById(R.id.btn_logout);
         btnLogout.setOnClickListener(v -> logoutUser());
@@ -42,12 +60,20 @@ public class FragmentProfil extends Fragment {
 
     private void logoutUser() {
         authHelper.logoutUser();
-        Toast.makeText(requireContext(), "Logout berhasil!", Toast.LENGTH_SHORT).show();
 
-        // Arahkan ke LoginActivity setelah logout
-        Intent intent = new Intent(requireContext(), LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
+        GoogleSignInHelper googleSignInHelper = new GoogleSignInHelper(requireContext(), getString(R.string.default_web_client_id), null);
+
+        googleSignInHelper.signOut(() -> {
+            if (isAdded() && getContext() != null) { // Ensure fragment is still attached
+                Toast.makeText(getContext(), "Signed out successfully", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getActivity(), LoginActivity.class));
+                if (getActivity() != null) {
+                    getActivity().finish();
+                }
+            } else {
+                Log.e(TAG, "Fragment is detached. Cannot perform UI updates.");
+            }
+        });
     }
 
     private void testAddPesanan() {
@@ -71,13 +97,11 @@ public class FragmentProfil extends Fragment {
         long tanggalPemesanan = System.currentTimeMillis(); // Timestamp saat ini
         String metodePembayaran = MetodePembayaran[rand.nextInt(MetodePembayaran.length)];
 
-        // Buat objek Pesanan dengan semua atribut
         Pesanan newPesanan = new Pesanan(
                 id, userId, produkId, produkNama, produkImageUrl, kategori,
                 jumlah, totalHarga, statusPesanan, tanggalPemesanan, metodePembayaran
         );
 
-        // Tambahkan pesanan ke ViewModel
         PesananViewModel pesananViewModel = new ViewModelProvider(requireActivity()).get(PesananViewModel.class);
         pesananViewModel.tambahPesanan(newPesanan);
     }

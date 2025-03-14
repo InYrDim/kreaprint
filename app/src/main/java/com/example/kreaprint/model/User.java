@@ -1,5 +1,7 @@
 package com.example.kreaprint.model;
 
+import com.google.firebase.Timestamp;
+
 public class User {
     private String id;
     private String nama;
@@ -7,13 +9,14 @@ public class User {
     private String phone = "";  // Default kosong
     private String alamat = ""; // Default kosong
     private String role = "customer"; // "customer" atau "admin"
-    private long createdAt;
+
+    private Timestamp createdAt;
 
     public User() {
         // Konstruktor kosong untuk Firestore
     }
 
-    public User(String id, String nama, String email, String role, long createdAt) {
+    public User(String id, String nama, String email, String role, Timestamp  createdAt) {
         this.id = id;
         this.nama = nama;
         this.email = email;
@@ -21,7 +24,7 @@ public class User {
         this.createdAt = createdAt;
     }
 
-    public User(String id, String nama, String email, String phone, String alamat, String role, long createdAt) {
+    public User(String id, String nama, String email, String phone, String alamat, String role, Timestamp  createdAt) {
         this.id = id;
         this.nama = nama;
         this.email = email;
@@ -50,6 +53,6 @@ public class User {
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
 
-    public long getCreatedAt() { return createdAt; }
-    public void setCreatedAt(long createdAt) { this.createdAt = createdAt; }
+    public Timestamp  getCreatedAt() { return createdAt; }
+    public void setCreatedAt(Timestamp  createdAt) { this.createdAt = createdAt; }
 }

@@ -157,7 +157,7 @@
 
         <!-- Tombol Continue with Google -->
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/btn_continue_with_google"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

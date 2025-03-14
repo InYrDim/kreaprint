@@ -3,7 +3,7 @@
     <!--    General-->
     <string name="app_name">kreaprint</string>
     <string name="brand_text">KreaPrint</string>
-    <string name="loading_text">Loading</string>
+    <string name="loading_text">Loading…</string>
 
     <!--    Icons-->
     <string name="desc_text_google_btn">Google Icon</string>
@@ -43,6 +43,10 @@
     <string name="tv_promo_text">50% off everything,\nends in 3 days.</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <string name="default_web_client_id">30457738574-ttchsa0ka5if0hfv3pehug2e00sk42r9.apps.googleusercontent.com</string>
+
 
 
 </resources>

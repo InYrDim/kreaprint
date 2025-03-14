@@ -2,6 +2,8 @@ package com.example.kreaprint.model;
 
 public class Product {
 
+    private String id;
+
     private String nama;
     private String kategori;
     private String imageUrl;
@@ -13,7 +15,8 @@ public class Product {
     public Product() {
 
     }
-    public Product(String nama, String kategori, String imageUrl, int jumlahOrder, String deskripsi, int harga, String tips) {
+    public Product(String id, String nama, String kategori, String imageUrl, int jumlahOrder, String deskripsi, int harga, String tips) {
+        this.id = id;
         this.nama = nama;
         this.kategori = kategori;
         this.imageUrl = imageUrl;
@@ -22,6 +25,7 @@ public class Product {
         this.harga = harga;
         this.tips = tips;
     }
+
 
     public void setNama(String nama) {
         this.nama = nama;
@@ -49,6 +53,10 @@ public class Product {
 
     public void setTips(String tips) {
         this.tips = tips;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getNama() {

@@ -3,33 +3,72 @@ package com.example.kreaprint.helper;
 import android.util.Log;
 
 import com.example.kreaprint.model.Product;
+import com.example.kreaprint.model.User;
+import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class FirestoreHelper {
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    public void addUser(String userId, String email, String username, FirestoreCallback<Boolean> callback) {
-        Map<String, Object> userMap = new HashMap<>();
-        userMap.put("email", email);
-        userMap.put("username", username);
+    private final String TAG = "FirestoreHelper";
 
-        db.collection("users").document(userId)
-                .set(userMap)
+    public void addUser(User user, FirestoreCallback<Boolean> callback) {
+        db.collection("users").document(user.getId())
+                .set(user)
                 .addOnSuccessListener(aVoid -> callback.onCallback(true))
                 .addOnFailureListener(e -> {
                     Log.e("Firestore", "Gagal menyimpan user", e);
                     callback.onCallback(false);
                 });
     }
+    public void saveUserToFirestore(FirebaseUser user) {
+        DocumentReference userRef = db.collection("users").document(user.getUid());
+
+        userRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult().exists()) {
+                // User sudah ada, tidak perlu ditambahkan lagi
+                Log.d(TAG, "User already exists in Firestore");
+            } else {
+                // User baru, buat objek User dan simpan ke Firestore
+                User newUser = new User();
+                newUser.setId(user.getUid());
+                newUser.setNama(user.getDisplayName());
+                newUser.setEmail(user.getEmail());
+                newUser.setCreatedAt(Timestamp.now());
+
+                userRef.set(newUser)
+                        .addOnSuccessListener(aVoid -> Log.d(TAG, "User added to Firestore"))
+                        .addOnFailureListener(e -> Log.e(TAG, "Error adding user to Firestore", e));
+            }
+        });
+    }
+
+    public void getUserById(String userId, FirestoreCallback<User> callback) {
+        db.collection("users").document(userId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        User user = documentSnapshot.toObject(User.class);
+                        callback.onCallback(user);
+                    } else {
+                        callback.onCallback(null);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firestore", "Gagal mengambil user: " + e.getMessage());
+                    callback.onCallback(null);
+                });
+    }
+
 
     public void addProduct(List<Product> produkList) {
         for (Product produk : produkList) {

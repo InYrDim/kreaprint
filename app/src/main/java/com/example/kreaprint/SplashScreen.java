@@ -79,7 +79,7 @@ public class SplashScreen extends AppCompatActivity {
     private void addData() {
         FirestoreHelper helper = new FirestoreHelper();
         List productList = new ArrayList();
-        productList.add(new Product("Stiker glossy atau doff", "Stiker & Cutting", "", 0, "", 0, ""));
+        productList.add(new Product("SC-1", "Stiker glossy atau doff", "Stiker & Cutting", "", 0, "", 0, ""));
 
         helper.addProduct(productList);
     }
