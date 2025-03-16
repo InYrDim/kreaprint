@@ -6,93 +6,182 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.FragmentProfil"
+    android:background="@color/primary_color"
     android:paddingHorizontal="12dp">
 
-
-    <Button
-        android:id="@+id/btn_edit_profile"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Edit Profile"
-        android:layout_marginTop="12dp"
-        style="@style/ButtonPrimary"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout5" />
-
-    <Button
-        android:id="@+id/btn_logout"
-        style="@style/OutlinedButtonPrimary"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Logout"
-        android:background="@color/primary_color"
-        android:textColor="@color/text_color"
-        android:layout_marginTop="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_edit_password2" />
-
-    <Button
-        android:id="@+id/btn_edit_password2"
-        style="@style/OutlinedButtonPrimary"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Change Password"
-        android:textColor="@color/text_color"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_edit_profile" />
-
     <LinearLayout
-        android:id="@+id/linearLayout5"
-        android:layout_width="0dp"
+        android:id="@+id/header_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:paddingVertical="16dp"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="8dp"
-        android:layout_marginTop="60dp"
-
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <ImageView
-            android:id="@+id/iv_produk"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/splash_background"
-            />
-
-        <LinearLayout
+        <TextView
+            android:id="@+id/tv_header"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:paddingStart="8dp">
+            android:text="@string/brand_text"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/white" />
 
-            <TextView
-                android:id="@+id/tv_username"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Brad"
-                android:textColor="@color/dark_text_color"
-                android:textSize="20sp"
-                android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/tv_email"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="something@email.com"
-                android:textColor="@color/dark_text_color"
-                android:textSize="12sp" />
-
-        </LinearLayout>
+        <ImageView
+            android:id="@+id/btn_logout"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:padding="0dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_logout_box_line"
+            app:tint="@color/white"
+            android:contentDescription="@string/ps_icon_goto_pesanan"
+            />
     </LinearLayout>
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/profile_details"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="8dp"
+        app:cardBackgroundColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/header_layout">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="24dp">
+
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_iv_profile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="50dp"
+                >
+                <ImageView
+                    android:id="@+id/iv_profile"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/splash_background"
+                    />
+            </androidx.cardview.widget.CardView>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:paddingHorizontal="8dp">
+
+                <TextView
+                    android:id="@+id/tv_displayname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Display Name"
+                    android:textColor="@color/dark_text_color"
+                    android:textSize="28sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_email"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="email@email.com"
+                    android:textColor="@color/dark_text_color"
+                    android:textSize="20sp" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+
+
+    <LinearLayout
+        android:id="@+id/profile_actions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profile_details">
+
+        <Button
+            android:id="@+id/btn_edit_profile"
+            style="@style/ButtonPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:textColor="@color/primary_color"
+            android:backgroundTint="#E2BEBE"
+            android:text="@string/ps_edit_profile" />
+
+
+
+        <Button
+            android:id="@+id/btn_edit_password2"
+            style="@style/OutlinedButtonPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/ps_change_password"
+            android:background="@drawable/border"
+            android:textColor="@color/text_color" />
+    </LinearLayout>
+
+
+    <!-- Menu Favorit Saya -->
+    <LinearLayout
+        android:id="@+id/my_favorites"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        style="@style/ButtonPrimary"
+        android:padding="12dp"
+        android:backgroundTint="@color/white"
+
+        app:layout_constraintTop_toBottomOf="@id/profile_actions"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_heart_line"
+            app:tint="@color/primary_color"
+            android:contentDescription="@string/ps_icon_goto_pesanan"
+            />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/ps_orders"
+            android:textSize="16sp"
+            android:textColor="@color/primary_color"
+            android:layout_weight="1"
+            android:paddingHorizontal="16dp"/>
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_arrow_right"
+            android:contentDescription="@string/ps_icon_goto_pesanan"
+            app:tint="@color/primary_color"/>
+    </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

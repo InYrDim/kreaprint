@@ -15,6 +15,10 @@
         android:theme="@style/Theme.App.Starting"
         tools:targetApi="31">
         <activity
+            android:name=".OrderProductActivity"
+            android:theme="@style/Theme.Design.NoActionBar"
+            android:exported="true" />
+        <activity
             android:name=".AboutActivity"
             android:exported="true"
             android:theme="@style/Theme.Design.NoActionBar" />

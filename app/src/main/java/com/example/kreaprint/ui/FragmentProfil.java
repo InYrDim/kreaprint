@@ -3,6 +3,7 @@ package com.example.kreaprint.ui;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,7 +28,9 @@ import java.util.Random;
 import java.util.UUID;
 
 public class FragmentProfil extends Fragment {
-    private Button btnLogout;
+    private ImageView btnLogout, profileImage;
+
+    private CardView profileImageContainer;
 
     private ToastHelper profileToast;
     private String userId;
@@ -42,7 +46,10 @@ public class FragmentProfil extends Fragment {
         authHelper = new AuthHelper(requireContext());
         profileToast = new ToastHelper(requireContext());
 
-        TextView name = view.findViewById(R.id.tv_username);
+        TextView name = view.findViewById(R.id.tv_displayname);
+
+        profileImageContainer = view.findViewById(R.id.card_iv_profile);
+        profileImage = view.findViewById(R.id.iv_profile);
 
         if(authHelper.isLoggedIn()) {
             userId = authHelper.getUserId();

@@ -23,7 +23,23 @@
     <string name="btn_text_login">Sign Up</string>
     <string name="desc_text_login">By signing up, you agree to our Terms and Privacy Policy.</string>
 
-<!--    About Screnn-->
+<!--    Profile Screen-->
+    <string name="ps_orders">Pesanan Saya</string>
+    <string name="ps_change_password">Ganti Password</string>
+    <string name="ps_edit_profile">Edit Profil</string>
+
+    <string name="ps_icon_goto_pesanan">Icon Action Pesanan Saya</string>
+
+<!--    Orders Screen-->
+    <string name="os_orders">Pesanan</string>
+
+<!--Order details Screen-->
+    <string name="ods_status_default">Sedang Diproses</string>
+    <string name="ods_status_done">Selesai</string>
+    <string name="ods_btn_status_default">Batalkan</string>
+    <string name="ods_btn_status_done">@string/ods_status_done</string>
+
+    <!--    About Screnn-->
     <string name="about_screen">About</string>
     <string name="about_description">KreaPrint adalah layanan percetakan inovatif yang menyediakan berbagai solusi cetak untuk kebutuhan bisnis, promosi, dan personal. </string>
 
@@ -44,7 +60,7 @@
     <string name="text_promo_banner_description">Promo Banner Description</string>
 
     <!--    Services -->
-    <string name="tv_promo_text">50% off everything,\nends in 3 days.</string>
+    <string name="tv_promo_text">Jasa Cetak?,\n Kreaprint Aja!.</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
