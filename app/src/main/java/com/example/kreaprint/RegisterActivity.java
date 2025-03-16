@@ -1,7 +1,10 @@
 package com.example.kreaprint;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
@@ -13,6 +16,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.credentials.exceptions.GetCredentialCancellationException;
 import androidx.credentials.exceptions.GetCredentialException;
+import androidx.credentials.exceptions.NoCredentialException;
 
 import com.example.kreaprint.helper.AuthHelper;
 import com.example.kreaprint.helper.FirestoreHelper;
@@ -36,7 +40,6 @@ public class RegisterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
         setContentView(R.layout.activity_register);
 
@@ -156,8 +159,38 @@ public class RegisterActivity extends AppCompatActivity {
 
             @Override
             public void onError(GetCredentialException e) {
-                Log.e(TAG, "Couldn't retrieve user's credentials: " + e.getLocalizedMessage());
-                resetGoogleButtonState();
+                Log.e(TAG, "Credential retrieval error: " + e.getLocalizedMessage());
+
+                new Handler(Looper.getMainLooper()).post(() -> {
+
+                    if (e instanceof NoCredentialException) {
+                        @SuppressLint("RestrictedApi") String errorType = e.getType();
+
+                        switch (errorType) {
+                            case "android.credentials.GetCredentialException.TYPE_NO_CREDENTIAL":
+                                registeringToast.showToast("No Google account found! Please add an account in settings.", ToastHelper.ToastType.ERROR);
+                                break;
+
+                            case "android.credentials.GetCredentialException.TYPE_USER_CANCELED":
+                                registeringToast.showToast("Sign-in canceled. Please try again.", ToastHelper.ToastType.WARNING);
+                                break;
+
+                            case "android.credentials.GetCredentialException.TYPE_INTERRUPTED":
+                                registeringToast.showToast("Sign-in process interrupted. Please retry.", ToastHelper.ToastType.WARNING);
+                                break;
+
+                            case "android.credentials.GetCredentialException.TYPE_UNKNOWN":
+                            default:
+                                registeringToast.showToast("An unknown error occurred: " + e.getLocalizedMessage(), ToastHelper.ToastType.ERROR);
+                                break;
+                        }
+                    }
+                    else {
+                        registeringToast.showToast("Unexpected error occurred.", ToastHelper.ToastType.ERROR);
+                    }
+
+                    resetGoogleButtonState();
+                });
             }
         });
 

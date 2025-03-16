@@ -25,8 +25,10 @@ public class SplashScreenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
+
+
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.splash_screen_activity); // Still using your custom splash layout
+        setContentView(R.layout.splash_screen_activity);
 
         authHelper = new AuthHelper(this);
         toastHelper = new ToastHelper(this);
