@@ -20,7 +20,7 @@
             android:layout_height="48dp"
             android:contentDescription="back button"
             android:scaleType="centerCrop"
-            android:src="@drawable/arrow_left"
+            android:src="@drawable/ic_arrow_left"
             android:background="@color/primary_color"/>
 
         <TextView

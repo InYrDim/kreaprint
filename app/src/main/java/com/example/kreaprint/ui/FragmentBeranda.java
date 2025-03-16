@@ -16,8 +16,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
 
+import com.example.kreaprint.AboutActivity;
 import com.example.kreaprint.ProductDetailActivity;
 import com.example.kreaprint.R;
 import com.example.kreaprint.adapter.HotProductAdapter;
@@ -49,6 +51,11 @@ public class FragmentBeranda extends Fragment {
         dropdownKategori = view.findViewById(R.id.dropdown_kategori);
         recyclerView = view.findViewById(R.id.rv_products);
         hotRecyclerView = view.findViewById(R.id.rv_hot_products);
+        ImageView aboutView = view.findViewById(R.id.iv_about);
+
+        aboutView.setOnClickListener(v -> {
+            startActivity(new Intent(getContext() , AboutActivity.class));
+        });
 
         FirestoreHelper firestoreHelper = new FirestoreHelper();
 

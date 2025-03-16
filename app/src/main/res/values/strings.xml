@@ -23,6 +23,10 @@
     <string name="btn_text_login">Sign Up</string>
     <string name="desc_text_login">By signing up, you agree to our Terms and Privacy Policy.</string>
 
+<!--    About Screnn-->
+    <string name="about_screen">About</string>
+    <string name="about_description">KreaPrint adalah layanan percetakan inovatif yang menyediakan berbagai solusi cetak untuk kebutuhan bisnis, promosi, dan personal. </string>
+
     <!--    Splash Screen   -->
     <string name="greeting_splash">Cetak Apa Saja, Kapan Saja!</string>
     <string name="greeting_beranda">Cetak Apa Saja, Kapan Saja!</string>
@@ -46,7 +50,6 @@
 
 
     <string name="default_web_client_id">30457738574-ttchsa0ka5if0hfv3pehug2e00sk42r9.apps.googleusercontent.com</string>
-
 
 
 </resources>
