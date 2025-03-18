@@ -24,17 +24,17 @@
     <string name="desc_text_login">By signing up, you agree to our Terms and Privacy Policy.</string>
 
     <!--    Change Password -->
-    <string name="text_cp_heading">Change Password</string>
-    <string name="btn_text_cp">Save Password</string>
-    <string name="text_current_password">Current Password</string>
-    <string name="text_new_password">New Password</string>
-    <string name="text_confirm_password">Confirm Password</string>
+    <string name="text_cp_heading">Ganti Password</string>
+    <string name="text_current_password">Password Saat Ini</string>
+    <string name="text_new_password">Password Baru</string>
+    <string name="text_confirm_password">Konfirmasi Password</string>
+    <string name="btn_text_cp">Simpan Password</string>
 
     <!--    Edit Profil -->
-    <string name="text_ep_heading">Edit Profile</string>
-    <string name="text_ep_fullname">Fullname</string>
+    <string name="text_ep_heading">Edit Profil</string>
+    <string name="text_ep_fullname">Nama Lengkap</string>
     <string name="text_ep_email">Email</string>
-    <string name="btn_text_ep">Sign Up</string>
+    <string name="btn_text_ep">Simpan Profil</string>
 
     <!--    Profile Screen-->
     <string name="ps_orders">Pesanan Saya</string>

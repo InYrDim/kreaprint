@@ -1,6 +1,9 @@
 package com.example.kreaprint;
 
+import static androidx.core.content.ContentProviderCompat.requireContext;
+
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,6 +12,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.kreaprint.components.CustomBackToolbar;
+import com.example.kreaprint.helper.AuthHelper;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class ChangePassword extends AppCompatActivity {
 
@@ -20,5 +26,9 @@ public class ChangePassword extends AppCompatActivity {
         CustomBackToolbar customBackToolbar = findViewById(R.id.customBackToolbar);
         customBackToolbar.setToolbarTitle("");
         customBackToolbar.showBackButton(true);
+
+
     }
+
+
 }

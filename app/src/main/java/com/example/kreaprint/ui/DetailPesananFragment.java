@@ -63,7 +63,7 @@ public class DetailPesananFragment extends Fragment {
         TextView tvKategori = view.findViewById(R.id.tv_detail_kategori);
         TextView tvStatus = view.findViewById(R.id.tv_detail_status);
         ImageView ivGambar = view.findViewById(R.id.iv_detail_gambar);
-        Button orders_btn = view.findViewById(R.id.orders_btn);
+//        Button orders_btn = view.findViewById(R.id.orders_btn);
 
         if (getArguments() != null) {
             pesanan = getArguments().getParcelable(ARG_PESANAN);  // Mengambil data Parcelable
@@ -73,10 +73,10 @@ public class DetailPesananFragment extends Fragment {
                 tvKategori.setText(pesanan.getKategori());
                 Log.d("Pesanan" , String.valueOf(Objects.equals(pesanan.getStatusPesanan(), "Selesai")));
 
-                if (Objects.equals(pesanan.getStatusPesanan(), "Selesai")) {
-                    orders_btn.setText("Selesai");
-                    orders_btn.setBackgroundColor(getResources().getColor(R.color.shade_primary_color));
-                }
+//                if (Objects.equals(pesanan.getStatusPesanan(), "Selesai")) {
+//                    orders_btn.setText("Selesai");
+//                    orders_btn.setBackgroundColor(getResources().getColor(R.color.shade_primary_color));
+//                }
 
                 tvStatus.setText(pesanan.getStatusPesanan());
 

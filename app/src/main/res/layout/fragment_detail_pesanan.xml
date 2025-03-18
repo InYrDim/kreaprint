@@ -112,12 +112,12 @@
              android:layout_height="wrap_content"
              android:orientation="horizontal">
 
-             <Button
-                 android:id="@+id/orders_btn"
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
-                 style="@style/ButtonPrimary"
-                 android:text="@string/ods_btn_status_default" />
+<!--             <Button-->
+<!--                 android:id="@+id/orders_btn"-->
+<!--                 android:layout_width="match_parent"-->
+<!--                 android:layout_height="wrap_content"-->
+<!--                 style="@style/ButtonPrimary"-->
+<!--                 android:text="@string/ods_btn_status_default" />-->
 
          </LinearLayout>
     </LinearLayout>

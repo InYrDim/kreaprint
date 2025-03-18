@@ -28,6 +28,7 @@ import com.example.kreaprint.helper.ToastHelper;
 import com.example.kreaprint.model.Pesanan;
 import com.example.kreaprint.viewmodel.PesananViewModel;
 import com.example.kreaprint.LoginActivity;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Random;
 import java.util.UUID;
@@ -45,17 +46,19 @@ public class FragmentProfil extends Fragment {
 
     private View view;
 
+
     Button changePasswordBtn, editProfileBtn;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_profil, container, false);
+        view = inflater.inflate(R.layout.fragment_profil, container, false);
 
         authHelper = new AuthHelper(requireContext());
         profileToast = new ToastHelper(requireContext());
 
-        TextView name = view.findViewById(R.id.tv_displayname);
+        TextView tv_name = view.findViewById(R.id.tv_displayname);
+        TextView tv_email = view.findViewById(R.id.tv_email);
 
         profileImageContainer = view.findViewById(R.id.card_iv_profile);
         profileImage = view.findViewById(R.id.iv_profile);
@@ -63,14 +66,27 @@ public class FragmentProfil extends Fragment {
         changePasswordBtn = view.findViewById(R.id.btn_change_password);
         editProfileBtn = view.findViewById(R.id.btn_edit_profile);
 
+        FirebaseUser firebaseUser = authHelper.getCurrentUser();
+
         if(authHelper.isLoggedIn()) {
             userId = authHelper.getUserId();
             Log.d("SignIn", String.valueOf(authHelper.isLoggedIn()));
         } {
             userId = authHelper.getCurrentUser().getUid();
+
         }
 
-        name.setText(userId);
+
+        String displayName = firebaseUser.getDisplayName();
+        String email = firebaseUser.getEmail();
+        userId = firebaseUser.getUid();
+
+        if (displayName.isEmpty()) {
+            displayName = "User" + System.currentTimeMillis();
+        }
+
+        tv_name.setText(displayName);
+        tv_email.setText(email);
 
         btnLogout = view.findViewById(R.id.btn_logout);
         btnLogout.setOnClickListener(v -> logoutUser());
@@ -91,6 +107,7 @@ public class FragmentProfil extends Fragment {
     private void showChangePasswordActivity() {
         changePasswordBtn.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), ChangePassword.class);
+            intent.putExtra("USER_ID", userId);
             startActivity(intent);
         });
     }
@@ -98,6 +115,7 @@ public class FragmentProfil extends Fragment {
     private void showEditProfileActivity() {
         editProfileBtn.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(),EditProfile.class);
+            intent.putExtra("USER_ID", userId);
             startActivity(intent);
         });
     }
