@@ -132,7 +132,7 @@
 
 
         <Button
-            android:id="@+id/btn_edit_password2"
+            android:id="@+id/btn_change_password"
             style="@style/OutlinedButtonPrimary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -23,17 +23,30 @@
     <string name="btn_text_login">Sign Up</string>
     <string name="desc_text_login">By signing up, you agree to our Terms and Privacy Policy.</string>
 
-<!--    Profile Screen-->
+    <!--    Change Password -->
+    <string name="text_cp_heading">Change Password</string>
+    <string name="btn_text_cp">Save Password</string>
+    <string name="text_current_password">Current Password</string>
+    <string name="text_new_password">New Password</string>
+    <string name="text_confirm_password">Confirm Password</string>
+
+    <!--    Edit Profil -->
+    <string name="text_ep_heading">Edit Profile</string>
+    <string name="text_ep_fullname">Fullname</string>
+    <string name="text_ep_email">Email</string>
+    <string name="btn_text_ep">Sign Up</string>
+
+    <!--    Profile Screen-->
     <string name="ps_orders">Pesanan Saya</string>
     <string name="ps_change_password">Ganti Password</string>
     <string name="ps_edit_profile">Edit Profil</string>
 
     <string name="ps_icon_goto_pesanan">Icon Action Pesanan Saya</string>
 
-<!--    Orders Screen-->
+    <!--    Orders Screen-->
     <string name="os_orders">Pesanan</string>
 
-<!--Order details Screen-->
+    <!--Order details Screen-->
     <string name="ods_status_default">Sedang Diproses</string>
     <string name="ods_status_done">Selesai</string>
     <string name="ods_btn_status_default">Batalkan</string>

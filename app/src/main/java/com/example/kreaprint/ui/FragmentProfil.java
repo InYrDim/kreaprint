@@ -3,8 +3,11 @@ package com.example.kreaprint.ui;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
@@ -16,6 +19,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.kreaprint.ChangePassword;
+import com.example.kreaprint.EditProfile;
 import com.example.kreaprint.R;
 import com.example.kreaprint.helper.AuthHelper;
 import com.example.kreaprint.helper.GoogleSignInHelper;
@@ -38,6 +43,10 @@ public class FragmentProfil extends Fragment {
     private static final String TAG = "GoogleSignInHelper";
     private AuthHelper authHelper;
 
+    private View view;
+
+    Button changePasswordBtn, editProfileBtn;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -50,6 +59,9 @@ public class FragmentProfil extends Fragment {
 
         profileImageContainer = view.findViewById(R.id.card_iv_profile);
         profileImage = view.findViewById(R.id.iv_profile);
+
+        changePasswordBtn = view.findViewById(R.id.btn_change_password);
+        editProfileBtn = view.findViewById(R.id.btn_edit_profile);
 
         if(authHelper.isLoggedIn()) {
             userId = authHelper.getUserId();
@@ -66,6 +78,28 @@ public class FragmentProfil extends Fragment {
         testAddPesanan();
 
         return view;
+    }
+
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        showChangePasswordActivity();
+        showEditProfileActivity();
+    }
+    private void showOrders() {
+        
+    }
+
+    private void showChangePasswordActivity() {
+        changePasswordBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), ChangePassword.class);
+            startActivity(intent);
+        });
+    }
+
+    private void showEditProfileActivity() {
+        editProfileBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(),EditProfile.class);
+            startActivity(intent);
+        });
     }
 
     private void logoutUser() {
