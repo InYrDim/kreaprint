@@ -18,7 +18,7 @@ public class ChangePassword extends AppCompatActivity {
         setContentView(R.layout.activity_change_password);
 
         CustomBackToolbar customBackToolbar = findViewById(R.id.customBackToolbar);
-        customBackToolbar.setToolbarTitle("About");
+        customBackToolbar.setToolbarTitle("");
         customBackToolbar.showBackButton(true);
     }
 }

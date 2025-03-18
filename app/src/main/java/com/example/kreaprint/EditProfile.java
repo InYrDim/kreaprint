@@ -18,7 +18,7 @@ public class EditProfile extends AppCompatActivity {
         setContentView(R.layout.activity_edit_profile);
 
         CustomBackToolbar customBackToolbar = findViewById(R.id.customBackToolbar);
-        customBackToolbar.setToolbarTitle("About");
+        customBackToolbar.setToolbarTitle("");
         customBackToolbar.showBackButton(true);
     }
 }
