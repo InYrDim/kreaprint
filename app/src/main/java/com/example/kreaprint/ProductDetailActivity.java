@@ -1,6 +1,8 @@
 package com.example.kreaprint;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -9,13 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
-import com.bumptech.glide.Glide;
 import com.example.kreaprint.helper.FirestoreHelper;
 import com.example.kreaprint.helper.ImageLoaderHelper;
 import com.example.kreaprint.helper.ToastHelper;
@@ -24,7 +21,6 @@ import com.example.kreaprint.model.Product;
 public class ProductDetailActivity extends AppCompatActivity {
 
     private ImageView imgProduct;
-
     private TextView productTitle, productDescription, productTip, productPrice;
 
     private FirestoreHelper firestoreHelper;
@@ -48,6 +44,21 @@ public class ProductDetailActivity extends AppCompatActivity {
         Button order = findViewById(R.id.btn_order);
         order.setOnClickListener(v -> {
             productDetailToast.showToast("Ordering Via Whatsapp");
+
+            // WhatsApp order logic
+            String phoneNumber = "+62";  //Isi sendiri
+            String productName = productTitle.getText().toString();
+            String message = "Halo, saya ingin memesan produk: " + productName;
+
+            String url = "https://wa.me/" + phoneNumber + "?text=" + Uri.encode(message);
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(url));
+
+            try {
+                startActivity(intent);
+            } catch (ActivityNotFoundException e) {
+                Toast.makeText(ProductDetailActivity.this, "WhatsApp tidak ditemukan", Toast.LENGTH_SHORT).show();
+            }
         });
 
         backBtn.setOnClickListener(v -> {
@@ -57,11 +68,10 @@ public class ProductDetailActivity extends AppCompatActivity {
         });
 
         firestoreHelper = new FirestoreHelper();
-
         productId = getIntent().getStringExtra("product_id");
 
         if (productId != null) {
-            Log.d("Product" , productId);
+            Log.d("Product", productId);
             getProductDetail(productId);
         } else {
             Toast.makeText(this, "Produk tidak ditemukan", Toast.LENGTH_SHORT).show();
@@ -70,7 +80,6 @@ public class ProductDetailActivity extends AppCompatActivity {
     }
 
     private void getProductDetail(String productId) {
-
         firestoreHelper.getProductById(productId, new FirestoreHelper.FirestoreCallback<Product>() {
             @Override
             public void onCallback(Product product) {
