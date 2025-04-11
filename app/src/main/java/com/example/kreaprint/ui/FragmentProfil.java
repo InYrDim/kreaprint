@@ -27,6 +27,7 @@ import com.example.kreaprint.EditProfile;
 import com.example.kreaprint.R;
 import com.example.kreaprint.helper.AuthHelper;
 import com.example.kreaprint.helper.FilePickerHelper;
+import com.example.kreaprint.helper.FirestoreHelper;
 import com.example.kreaprint.helper.GoogleSignInHelper;
 import com.example.kreaprint.helper.ToastHelper;
 import com.example.kreaprint.LoginActivity;
@@ -128,7 +129,12 @@ public class FragmentProfil extends Fragment {
     private void updateUiUserInfo() {
         FirebaseUser firebaseUser = authHelper.getCurrentUser();
 
+
+
         if (firebaseUser != null) {
+
+            FirestoreHelper firestoreHelper = new FirestoreHelper();
+
             String displayName = firebaseUser.getDisplayName();
             String email = firebaseUser.getEmail();
 
@@ -136,7 +142,11 @@ public class FragmentProfil extends Fragment {
                 displayName = "User" + System.currentTimeMillis();
             }
 
-            Log.d("Image", firebaseUser.getPhotoUrl().toString());
+            try {
+                Log.d("Image", firebaseUser.getPhotoUrl().toString());
+            } catch (Exception e) {
+                Log.d("Image","Get Photo Error");
+            }
 //            ImageLoaderHelper.loadImage(requireContext(), Objects.requireNonNull(firebaseUser.getPhotoUrl()).toString(), profileImage);
 
             tv_name.setText(displayName);

@@ -80,7 +80,8 @@
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/splash_background" />
+                        android:src="" />
+                    <!--@drawable/splash_background-->
 
                     <ImageButton
                         android:id="@+id/btn_edit_photo"
