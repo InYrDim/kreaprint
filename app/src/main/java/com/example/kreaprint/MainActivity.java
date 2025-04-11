@@ -1,45 +1,32 @@
 package com.example.kreaprint;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
+import android.view.MenuItem;
 import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
-
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-
-import com.example.kreaprint.helper.ToastHelper;
-import com.example.kreaprint.model.Product;
 import com.example.kreaprint.ui.FragmentBeranda;
-import com.example.kreaprint.ui.FragmentPesanan;
 import com.example.kreaprint.ui.FragmentProfil;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    BottomNavigationView bottomNavigationView;
-    FrameLayout frameLayout;
+    private BottomNavigationView bottomNavigationView;
+    private FrameLayout frameLayout;
 
-    private int currentPage = 0;
-    private Handler debounceHandler = new Handler(Looper.getMainLooper());
+    private final Handler debounceHandler = new Handler(Looper.getMainLooper());
     private Runnable debounceRunnable;
-
-    private static final String TAG = "StoragePermission";
-
     private static final long DEBOUNCE_DELAY = 300;
+    private int currentFragmentId = -1;
+
+    private final Map<Integer, Fragment> fragmentMap = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,68 +36,80 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.main_bottom_nav);
         frameLayout = findViewById(R.id.fragment_container);
 
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new FragmentBeranda())
-                    .commit();
+        fragmentMap.put(R.id.home, new FragmentBeranda());
+        fragmentMap.put(R.id.profile, new FragmentProfil());
 
-            bottomNavigationView.getMenu().findItem(R.id.home).setIcon(R.drawable.ic_home_fill);
+        if (savedInstanceState == null) {
+            loadFragment(R.id.home, false);
+            currentFragmentId = R.id.home;
+            bottomNavigationView.setSelectedItemId(R.id.home);
+            updateActiveIcon(R.id.home);
+        } else {
+            currentFragmentId = savedInstanceState.getInt("CURRENT_FRAGMENT_ID", R.id.home);
+            bottomNavigationView.setSelectedItemId(currentFragmentId);
+            updateActiveIcon(currentFragmentId);
         }
 
-        bottomNavigationView.setOnItemSelectedListener(item -> {
-            Fragment selectedFragment;
-            int newPage = 0;
-
-            if (item.getItemId() == R.id.home) {
-                newPage = 0;
-                selectedFragment = new FragmentBeranda();
-            } else if (item.getItemId() == R.id.profile) {
-                newPage = 1;
-                selectedFragment = new FragmentProfil();
-            } else if (item.getItemId() == R.id.profile) {
-                newPage = 2;
-                selectedFragment = new FragmentProfil();
-            } else {
-                selectedFragment = null;
-            }
-
-            Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            if (currentFragment != null && currentFragment.getClass().equals(selectedFragment.getClass())) {
-                return false;
-            }
-
-            resetIcons();
-            if (item.getItemId() == R.id.home) {
-                item.setIcon(R.drawable.ic_home_fill);
-            } else if (item.getItemId() == R.id.profile) {
-                item.setIcon(R.drawable.ic_user_fill);
-            } else if (item.getItemId() == R.id.profile) {
-                item.setIcon(R.drawable.ic_user_fill);
-            }
-
-            if (selectedFragment != null && !getSupportFragmentManager().isStateSaved()) {
-
-                debounceHandler.removeCallbacks(debounceRunnable);
-                debounceRunnable = () -> {
-                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.setCustomAnimations(
-                            R.anim.slide_in_right,
-                            R.anim.slide_out_left,
-                            R.anim.slide_in_left,
-                            R.anim.slide_out_right
-                    );
-                    transaction.replace(R.id.fragment_container, selectedFragment);
-                    transaction.commit();
-                };
-                debounceHandler.postDelayed(debounceRunnable, DEBOUNCE_DELAY);
-            }
-            return true;
-        });
+        bottomNavigationView.setOnItemSelectedListener(this::onNavigationItemSelected);
     }
 
-    private void resetIcons() {
-        bottomNavigationView.getMenu().findItem(R.id.home).setIcon(R.drawable.ic_home_line);
-//        bottomNavigationView.getMenu().findItem(R.id.profile).setIcon(R.drawable.ic_order_line);
-        bottomNavigationView.getMenu().findItem(R.id.profile).setIcon(R.drawable.ic_user_line);
+    private boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int itemId = item.getItemId();
+
+        if (itemId == currentFragmentId) {
+            return false;
+        }
+
+        debounceHandler.removeCallbacks(debounceRunnable);
+        debounceRunnable = () -> loadFragment(itemId, true);
+        debounceHandler.postDelayed(debounceRunnable, DEBOUNCE_DELAY);
+
+        return true;
+    }
+
+    private void loadFragment(int fragmentId, boolean useAnimation) {
+        Fragment fragment = fragmentMap.get(fragmentId);
+        if (fragment != null && !getSupportFragmentManager().isStateSaved()) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+            if (useAnimation) {
+                setFragmentTransactionAnimation(transaction, fragmentId);
+            }
+
+            transaction.replace(R.id.fragment_container, fragment);
+            transaction.commit();
+            currentFragmentId = fragmentId;
+            updateActiveIcon(fragmentId);
+        }
+    }
+
+    private void setFragmentTransactionAnimation(FragmentTransaction transaction, int newFragmentId) {
+        if (newFragmentId > currentFragmentId) {
+            transaction.setCustomAnimations(
+                    R.anim.slide_in_right,
+                    R.anim.slide_out_left,
+                    R.anim.slide_in_left,
+                    R.anim.slide_out_right
+            );
+        } else if (newFragmentId < currentFragmentId) {
+            transaction.setCustomAnimations(
+                    R.anim.slide_in_left,
+                    R.anim.slide_out_right,
+                    R.anim.slide_in_right,
+                    R.anim.slide_out_left
+            );
+        }
+    }
+
+    private void updateActiveIcon(int itemId) {
+        bottomNavigationView.getMenu().findItem(R.id.home).setIcon(itemId == R.id.home ? R.drawable.ic_home_fill : R.drawable.ic_home_line);
+        bottomNavigationView.getMenu().findItem(R.id.profile).setIcon(itemId == R.id.profile ? R.drawable.ic_user_fill : R.drawable.ic_user_line);
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("CURRENT_FRAGMENT_ID", currentFragmentId);
     }
 }

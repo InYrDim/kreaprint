@@ -1,5 +1,7 @@
 package com.example.kreaprint.ui;
 
+import static com.example.kreaprint.helper.ImagekitHelper.DEFAULT_PROFILE_FOLDER;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -33,12 +35,17 @@ import com.example.kreaprint.helper.ImageLoaderHelper;
 import com.example.kreaprint.helper.ImagekitHelper;
 import com.example.kreaprint.helper.ToastHelper;
 import com.example.kreaprint.LoginActivity;
+import com.example.kreaprint.helper.firebase.FirestoreCallback;
+import com.example.kreaprint.helper.firebase.RepositoryFactory;
+import com.example.kreaprint.helper.firebase.UserRepository;
 import com.example.kreaprint.model.User;
 import com.example.kreaprint.utils.FileUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FragmentProfil extends Fragment {
     private ImageView btnLogout, profileImage;
@@ -48,43 +55,35 @@ public class FragmentProfil extends Fragment {
 
     private static final String TAG = "GoogleSignInHelper";
     private AuthHelper authHelper;
-    private View view;
+    private View view, rootLayout;
 
     private TextView tv_name, tv_email;
 
     Button changePasswordBtn, editProfileBtn;
-
+    ImageButton btn_edit_photo;
     private FilePickerHelper filePickerHelper;
     private final ActivityResultLauncher<Intent> filePickerLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
                 if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                     Uri selectedImageUri = result.getData().getData();
-
-                    filePickerHelper.handleSelectedFile(selectedImageUri, uri -> {
-
-                        profileImage.setImageURI(uri);
-
-                        Log.d(TAG, "Uploading file: " + uri.toString());
-
-                        // Get file path
-                        String filePath = FileUtils.getPath(requireContext(), uri);
-                        if (filePath == null) {
-                            Log.e(TAG, "Failed to get file path from URI");
-                            return;
-                        }
-
-                        File file = new File(FileUtils.getPath(requireContext(), uri));
-                        if (!file.exists()) {
-                            Log.e(TAG, "File does not exist: " + file.getAbsolutePath());
-                            return;
-                        }
-
-                        handleProfileImageUpdate(file);
-
-                    });
+                    handleImageSelection(selectedImageUri);
                 }
-                Log.d("FilePickerHelper", "Image getted");
             });
+
+    private void handleImageSelection(Uri imageUri) {
+        filePickerHelper.handleSelectedFile(imageUri, uri -> {
+            profileImage.setImageURI(uri);
+
+            // Convert URI to File
+            String filePath = FileUtils.getPath(requireContext(), uri);
+            if (filePath != null) {
+                File file = new File(filePath);
+                if (file.exists()) {
+                    handleProfileImageUpdate(file);
+                }
+            }
+        });
+    }
 
 
     public void handleProfileImageUpdate(File file) {
@@ -95,108 +94,139 @@ public class FragmentProfil extends Fragment {
         }
 
         String userId = firebaseUser.getUid();
-        FirestoreHelper firestoreHelper = new FirestoreHelper();
+        UserRepository userRepo = RepositoryFactory.getUserRepository();
 
-        firestoreHelper.getUserById(userId, user -> {
-            if (user != null) {
-                deleteOldImageIfExistsThenUpload(user, file, firestoreHelper);
-            } else {
-                Log.e("FirestoreError", "User not found");
+        userRepo.getUserById(userId, new FirestoreCallback<User>() {
+            @Override
+            public void onSuccess(User user) {
+                if (user == null) {
+                    Log.e("FirestoreError", "User not found");
+                    return;
+                }
+
+//                Delete Old Image (Existing Image) if Exists
+                if( user.getImageUrlId() != null && !user.getImageUrlId().isEmpty()) {
+                    String imageUrlId = user.getImageUrlId();
+                    deleteImageOnImageKit(imageUrlId);
+                }
+
+//              Continue upload image
+
+                Map<String, String> params = new HashMap<>();
+                params.put("fileName", file.getName());
+                params.put("useUniqueFileName", "true");
+                params.put("folder", DEFAULT_PROFILE_FOLDER);
+
+                ImagekitHelper.uploadFile(file,  params, new ImagekitHelper.UploadCallback() {
+                    @Override
+                    public void onSuccess(ImagekitHelper.UploadResponse response) {
+                        Log.d("UploadSuccess", "URL: " + response.url);
+
+                        user.setImageUrl(response.url);
+                        user.setImageUrlId(response.fileId);
+
+                        Log.d("UploadSuccess", "IMAGE ID: " + response.fileId);
+//                        67f93a3f432c476416569710
+
+                        UserRepository userRepo = RepositoryFactory.getUserRepository();
+                        userRepo.updateUserImageUrlWithImageId(user.getId(),response.url, response.fileId, new FirestoreCallback<Boolean>() {
+                            @Override
+                            public void onSuccess(Boolean result) {
+                                Log.d("UpdateSuccess", "User updated with new image");
+                                updateUiUserInfo();
+                            }
+                            @Override
+                            public void onError(Exception e) {
+                                Log.e("UpdateError", "Error updating user: " + e.getMessage());
+                            }
+                        });
+
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        Log.e("UploadError", error);
+                    }
+                });
+            }
+            @Override
+            public void onError(Exception e) {
+                Log.e("FirestoreError", "Error getting user: " + e.getMessage());
             }
         });
+
     }
 
-    private void deleteOldImageIfExistsThenUpload(User user, File file, FirestoreHelper firestoreHelper) {
-        String imageUrlId = user.getImageUrlId();
+    private void deleteImageOnImageKit(String ImageId) {
 
-        if (imageUrlId != null && !imageUrlId.isEmpty()) {
-            ImagekitHelper.deleteFile(imageUrlId, new ImagekitHelper.DeleteCallback() {
-                @Override
-                public void onSuccess(ImagekitHelper.DeleteResponse response) {
-                    Log.d("ImageDelete", "Old image deleted");
-                    uploadNewImageAndUpdateUser(user, file, firestoreHelper);
-                }
+        Log.d("ImageDelete", ImageId);
 
-                @Override
-                public void onError(String error) {
-                    Log.e("ImageDeleteError", "Failed to delete old image: " + error);
-                    uploadNewImageAndUpdateUser(user, file, firestoreHelper); // Still upload
-                }
-            });
-        } else {
-            uploadNewImageAndUpdateUser(user, file, firestoreHelper);
-        }
-    }
+        ImagekitHelper.deleteFile(ImageId, new ImagekitHelper.DeleteCallback() {
 
-    private void uploadNewImageAndUpdateUser(User user, File file, FirestoreHelper firestoreHelper) {
-        ImagekitHelper.uploadFile(file, new ImagekitHelper.UploadCallback() {
             @Override
-            public void onSuccess(ImagekitHelper.UploadResponse response) {
-                Log.d("UploadSuccess", "URL: " + response.url);
-
-                user.setImageUrl(response.url);
-                user.setImageUrlId(response.fileId);
-
-                firestoreHelper.updateUserWithMerge(user, result -> {
-                    Log.d("UpdateSuccess", "User updated with new image");
-                    updateUiUserInfo();
-                });
+            public void onSuccess(ImagekitHelper.DeleteResponse response) {
+                Log.d("ImageDelete", "Old image deleted");
             }
 
             @Override
             public void onError(String error) {
-                Log.e("UploadError", error);
+                Log.e("ImageDeleteError", "Failed to delete old image: " + error);
             }
         });
     }
 
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_profil, container, false);
-
-        authHelper = new AuthHelper(requireContext());
-        profileToast = new ToastHelper(requireContext());
-
-        // Initialize the TextView fields
+    private void setupViews(View view) {
         tv_name = view.findViewById(R.id.tv_displayname);
         tv_email = view.findViewById(R.id.tv_email);
 
         profileImageContainer = view.findViewById(R.id.card_iv_profile);
         profileImage = view.findViewById(R.id.iv_profile);
 
-        filePickerHelper = new FilePickerHelper(this, profileImage, filePickerLauncher);
+        btn_edit_photo = view.findViewById(R.id.btn_edit_photo);
 
         changePasswordBtn = view.findViewById(R.id.btn_change_password);
         editProfileBtn = view.findViewById(R.id.btn_edit_profile);
 
-        ImageButton btn_edit_photo = view.findViewById(R.id.btn_edit_photo);
-        View rootLayout = view.findViewById(R.id.root_layout);
+        rootLayout = view.findViewById(R.id.root_layout);
+    }
 
+    private void setupHelpers() {
+        filePickerHelper = new FilePickerHelper(this, profileImage, filePickerLauncher);
+    }
+
+    private void setupListeners() {
         profileImageContainer.setOnClickListener(v -> btn_edit_photo.setVisibility(View.VISIBLE));
-
         rootLayout.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 btn_edit_photo.setVisibility(View.GONE);
             }
             return false;
         });
-
         btn_edit_photo.setOnClickListener(v -> {
             Log.d("ImageKit", "Starting");
             filePickerHelper.checkStoragePermission();
         });
+    }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_profil, container, false);
+        profileToast = new ToastHelper(requireContext());
+
+        setupViews(view);
+        setupHelpers();
+        setupListeners();
+
+        authHelper = new AuthHelper(requireContext());
         FirebaseUser firebaseUser = authHelper.getCurrentUser();
+        userId = null;
 
-        if (authHelper.isLoggedIn()) {
-            userId = authHelper.getUserId();
-            Log.d("SignIn", String.valueOf(authHelper.isLoggedIn()));
+        if (firebaseUser != null) {
+            userId = firebaseUser.getUid();
+            Log.d("AuthStatus", "User authenticated: " + authHelper.isLoggedIn());
         } else {
-            if (firebaseUser != null) {
-                userId = firebaseUser.getUid();
-            }
+            Log.w("AuthStatus", "No active user session");
         }
 
         btnLogout = view.findViewById(R.id.btn_logout);
@@ -226,7 +256,7 @@ public class FragmentProfil extends Fragment {
 
             firestoreHelper.getUserById(firebaseUser.getUid(), user -> {
                 if (user != null) {
-                    tv_name.setText(user.getNama());
+                    tv_name.setText(user.getName());
                     tv_email.setText(user.getEmail());
 
                     try {
@@ -246,7 +276,6 @@ public class FragmentProfil extends Fragment {
     private void showChangePasswordActivity() {
         changePasswordBtn.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), ChangePassword.class);
-            intent.putExtra("USER_ID", userId);
             startActivity(intent);
         });
     }
@@ -254,7 +283,6 @@ public class FragmentProfil extends Fragment {
     private void showEditProfileActivity() {
         editProfileBtn.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), EditProfile.class);
-            intent.putExtra("USER_ID", userId);
             startActivity(intent);
         });
     }

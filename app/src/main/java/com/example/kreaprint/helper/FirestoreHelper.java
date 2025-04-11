@@ -4,11 +4,6 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-import com.example.kreaprint.model.ImagekitResponse;
 import com.example.kreaprint.model.Product;
 import com.example.kreaprint.model.User;
 import com.google.firebase.Timestamp;
@@ -53,7 +48,7 @@ public class FirestoreHelper {
 
                 User newUser = new User();
                 newUser.setId(user.getUid());
-                newUser.setNama(user.getDisplayName());
+                newUser.setName(user.getDisplayName());
                 newUser.setEmail(user.getEmail());
                 newUser.setCreatedAt(Timestamp.now());
 
@@ -103,8 +98,8 @@ public class FirestoreHelper {
         }
 
         Map<String, Object> userMap = new HashMap<>();
-        if (user.getNama() != null) {
-            userMap.put("name", user.getNama());
+        if (user.getName() != null) {
+            userMap.put("name", user.getName());
         }
         if (user.getEmail() != null) {
             userMap.put("email", user.getEmail());
@@ -152,6 +147,12 @@ public class FirestoreHelper {
     public void updateUserImageUrl(String userId, String imageUrl) {
         db.collection("users").document(userId)
                 .update("imageUrl", imageUrl)
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "Image URL updated successfully"));
+    }
+
+    public void updateUserFullname(String userId, String nama) {
+        db.collection("users").document(userId)
+                .update("name", nama)
                 .addOnSuccessListener(aVoid -> Log.d(TAG, "Image URL updated successfully"));
     }
 

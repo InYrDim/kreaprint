@@ -1,7 +1,6 @@
 package com.example.kreaprint;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -9,8 +8,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.kreaprint.components.CustomBackToolbar;
 import com.example.kreaprint.helper.AuthHelper;
 import com.example.kreaprint.helper.ToastHelper;
+import com.example.kreaprint.helper.firebase.FirestoreCallback;
+import com.example.kreaprint.helper.firebase.RepositoryFactory;
+import com.example.kreaprint.helper.firebase.UserRepository;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
 public class EditProfile extends AppCompatActivity {
 
@@ -34,6 +37,7 @@ public class EditProfile extends AppCompatActivity {
             finish();
             return;
         }
+
         String userId = user.getUid();
         Button btnUpdate = findViewById(R.id.btn_ep);
 
@@ -47,9 +51,14 @@ public class EditProfile extends AppCompatActivity {
             String newEmail = editTextNewEmail.getText().toString().trim();
             String newDisplayName = editTextNewDisplayName.getText().toString().trim();
 
-
             if (!newEmail.isEmpty() && !newDisplayName.isEmpty()) {
-                updateUserInfo(user, newEmail, newDisplayName);
+                btnUpdate.setEnabled(false);
+                btnUpdate.setText(R.string.loading_text);
+
+                updateUserInfo(user, newEmail, newDisplayName, () -> {
+                    btnUpdate.setEnabled(true);
+                    btnUpdate.setText(R.string.btn_text_ep);
+                });
             } else {
                 epToast.showToast("Email dan nama tidak boleh kosong!", ToastHelper.ToastType.WARNING);
             }
@@ -57,7 +66,11 @@ public class EditProfile extends AppCompatActivity {
 
     }
 
-    private void updateUserInfo(FirebaseUser user, String newEmail, String newDisplayName) {
+    private interface updateUserInfoCallback {
+        void onFinish();
+    }
+
+    private void updateUserInfo(FirebaseUser user, String newEmail, String newDisplayName, updateUserInfoCallback callback) {
         if (newDisplayName.equals(user.getDisplayName()) && newEmail.equals(user.getEmail())) {
             epToast.showToast("Tidak Ada Perubahan Pada Profil", ToastHelper.ToastType.WARNING);
             finish();
@@ -70,6 +83,23 @@ public class EditProfile extends AppCompatActivity {
 
         user.updateProfile(profileUpdates).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
+
+                UserRepository userRepo = RepositoryFactory.getUserRepository();
+                userRepo.updateUserFullName(newDisplayName, user.getUid(), new FirestoreCallback<Boolean>() {
+                    @Override
+                    public void onSuccess(Boolean result) {
+                        // Handle success
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        // Handle error
+                        if (e instanceof FirebaseFirestoreException) {
+
+                        }
+                    }
+                });
+
                 user.updateEmail(newEmail).addOnCompleteListener(emailTask -> {
                     if (emailTask.isSuccessful()) {
                         epToast.showToast("Profil berhasil diperbarui!", ToastHelper.ToastType.SUCCESS);
@@ -78,8 +108,11 @@ public class EditProfile extends AppCompatActivity {
                         epToast.showToast("Gagal memperbarui email: " + emailTask.getException().getMessage(), ToastHelper.ToastType.ERROR);
                     }
                 });
+
+                callback.onFinish();
             } else {
                 epToast.showToast("Gagal memperbarui profil: " + task.getException().getMessage(), ToastHelper.ToastType.ERROR);
+                callback.onFinish();
             }
         });
     }

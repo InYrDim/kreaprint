@@ -4,6 +4,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.kreaprint.model.User;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -24,11 +26,16 @@ import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+import retrofit2.http.PartMap;
 import retrofit2.http.Path;
 
 public class ImagekitHelper {
+    public static final String DEFAULT_PROFILE_FOLDER = "kreaprint/user_profiles";
+    public static final String DEFAULT_PRODUCT_FOLDER = "kreaprint/products";
 
     private static final String TAG = "ImagekitHelper";
+
+
     private static final String UPLOAD_BASE_URL = "https://upload.imagekit.io/api/v2/files/";
     private static final String TOKEN_BASE_URL = "https://v0-next-js-token-server.vercel.app/api/";
 
@@ -46,9 +53,8 @@ public class ImagekitHelper {
         })
         Call<UploadResponse> uploadFile(
                 @Part MultipartBody.Part file,
-                @Part("fileName") RequestBody fileName,
-//                @Part("token") RequestBody token,
-                @Part("useUniqueFileName") RequestBody useUniqueFileName
+                @PartMap Map<String, RequestBody> parameters
+
         );
 
     }
@@ -108,7 +114,12 @@ public class ImagekitHelper {
         });
     }
 
-    public static void uploadFile(File file, UploadCallback callback) {
+
+    /**
+    *  @param file: File to be uploaded
+    *  @param params: Map of parameters to be sent with the request
+    */
+    public static void uploadFile(File file, Map<String, String> params, UploadCallback callback) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(UPLOAD_BASE_URL)
                 .client(new OkHttpClient.Builder().build())
@@ -119,10 +130,16 @@ public class ImagekitHelper {
 
         RequestBody requestFile = RequestBody.create(file, MediaType.parse("image/*"));
         MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
-        RequestBody fileNameBody = RequestBody.create(file.getName(), MediaType.parse("text/plain"));
-        RequestBody uniqueFileName = RequestBody.create("true", MediaType.parse("text/plain"));
 
-        Call<UploadResponse> call = uploadService.uploadFile(filePart, fileNameBody, uniqueFileName);
+
+
+        Map<String, RequestBody> requestBodyMap = new HashMap<>();
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            requestBodyMap.put(entry.getKey(),
+                    RequestBody.create(entry.getValue(), MediaType.parse("text/plain")));
+        }
+
+        Call<UploadResponse> call = uploadService.uploadFile(filePart, requestBodyMap);
 
         call.enqueue(new Callback<UploadResponse>() {
             @Override
