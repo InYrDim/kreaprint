@@ -19,10 +19,12 @@ import androidx.credentials.exceptions.GetCredentialException;
 import androidx.credentials.exceptions.NoCredentialException;
 
 import com.example.kreaprint.helper.AuthHelper;
-import com.example.kreaprint.helper.FirestoreHelper;
 import com.example.kreaprint.helper.GoogleSignInHelper;
 import com.example.kreaprint.helper.PasswordSignInHelper;
 import com.example.kreaprint.helper.ToastHelper;
+import com.example.kreaprint.helper.firebase.FirestoreCallback;
+import com.example.kreaprint.helper.firebase.RepositoryFactory;
+import com.example.kreaprint.helper.firebase.UserRepository;
 import com.google.firebase.auth.FirebaseUser;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -84,19 +86,27 @@ public class RegisterActivity extends AppCompatActivity {
                     btnRegister.setEnabled(false);
                     btnRegister.setText(R.string.loading_text);
 
-                    registeringToast = new ToastHelper(RegisterActivity.this);
                     registeringToast.showToast("Mendaftarkan...");
                 }
 
+
                 @Override
-                public void onLoginSuccess(FirebaseUser user) {
-                    registeringToast.cancelToast(); // Cancel previous toast
+                public void onLoginSuccess(FirebaseUser firebaseUser) {
                     registeringToast.showToast("Registrasi berhasil!");
 
-                    FirestoreHelper firestoreHelper = new FirestoreHelper();
-                    firestoreHelper.saveUserToFirestore(user);
+                    UserRepository userRepo = RepositoryFactory.getUserRepository();
+                    userRepo.createUser(firebaseUser, new FirestoreCallback<Boolean>() {
+                        @Override
+                        public void onSuccess(Boolean result) {
+                            Log.d(TAG, "User created successfully");
+                            registeringToast.showToast( "Registrasi berhasil! Selamat datang, " + firebaseUser.getDisplayName());
+                        }
+                        @Override
+                        public void onError(Exception e) {
+                            Log.e(TAG, "Error creating user", e);
+                        }
+                    });
 
-//                    Toast.makeText(RegisterActivity.this, "Registrasi berhasil! Selamat datang, " + user.getDisplayName(), Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(RegisterActivity.this, MainActivity.class));
                     finish();
                 }
@@ -106,7 +116,7 @@ public class RegisterActivity extends AppCompatActivity {
                     btnRegister.setEnabled(true);
                     btnRegister.setText(R.string.btn_text_reg);
 
-                    registeringToast.cancelToast(); // Cancel previous toast
+                    registeringToast.cancelToast();
                     registeringToast.showToast("Registrasi gagal: " + e.getMessage(), ToastHelper.ToastType.ERROR);
                 }
             });

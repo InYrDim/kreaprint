@@ -20,6 +20,9 @@ import androidx.credentials.exceptions.ClearCredentialException;
 import androidx.credentials.exceptions.GetCredentialCancellationException;
 import androidx.credentials.exceptions.GetCredentialException;
 
+import com.example.kreaprint.helper.firebase.FirestoreCallback;
+import com.example.kreaprint.helper.firebase.RepositoryFactory;
+import com.example.kreaprint.helper.firebase.UserRepository;
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
 import com.google.firebase.auth.AuthCredential;
@@ -119,13 +122,24 @@ public class GoogleSignInHelper {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        FirebaseUser user = mAuth.getCurrentUser();
+                        FirebaseUser firebaseUser = mAuth.getCurrentUser();
 
-                        if (user != null) {
-                            FirestoreHelper firestoreHelper = new FirestoreHelper();
-                            firestoreHelper.saveUserToFirestore(user);
+                        if (firebaseUser != null) {
+
+                            UserRepository userRepo = RepositoryFactory.getUserRepository();
+                            userRepo.createUser(firebaseUser, new FirestoreCallback<Boolean>() {
+                                @Override
+                                public void onSuccess(Boolean result) {
+                                    Log.d(TAG, "User created successfully");
+                                }
+                                @Override
+                                public void onError(Exception e) {
+                                    Log.e(TAG, "Error creating user", e);
+                                }
+                            });
+
                         }
-                        if (callback != null) callback.onSignInSuccess(user);
+                        if (callback != null) callback.onSignInSuccess(firebaseUser);
                     } else {
                         Log.w(TAG, "signInWithCredential:failure", task.getException());
                         if (callback != null) callback.onSignInFailure(task.getException());

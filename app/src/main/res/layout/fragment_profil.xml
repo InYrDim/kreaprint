@@ -80,8 +80,7 @@
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/splash_background" />
-                    <!--@drawable/splash_background-->
+                        android:src="@drawable/default_profil" />
 
                     <ImageButton
                         android:id="@+id/btn_edit_photo"
@@ -93,8 +92,6 @@
                         android:src="@drawable/ic_edit_line"
                         android:visibility="gone" />
                 </androidx.cardview.widget.CardView>
-
-                <!-- Edit Button Overlay -->
 
             </RelativeLayout>
 
@@ -110,7 +107,7 @@
                     android:id="@+id/tv_displayname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Display Name"
+                    android:text="@string/ps_default_profile"
                     android:textColor="@color/dark_text_color"
                     android:textSize="28sp"
                     android:textStyle="bold" />
@@ -119,7 +116,7 @@
                     android:id="@+id/tv_email"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="email@email.com"
+                    android:text="@string/ps_email"
                     android:textColor="@color/dark_text_color"
                     android:textSize="20sp" />
 

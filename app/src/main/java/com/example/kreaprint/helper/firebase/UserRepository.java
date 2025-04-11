@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.kreaprint.model.User;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.HashMap;
@@ -22,6 +23,8 @@ public class UserRepository extends BaseRepository {
         user.setId(firebaseUser.getUid());
         user.setEmail(firebaseUser.getEmail());
         user.setImageUrl(firebaseUser.getPhotoUrl() != null ? firebaseUser.getPhotoUrl().toString() : null);
+        user.setCreatedAt(Timestamp.now());
+
 
         db.collection(COLLECTION).document(user.getId())
                 .set(user)

@@ -80,6 +80,7 @@ public class FragmentProfil extends Fragment {
                 File file = new File(filePath);
                 if (file.exists()) {
                     handleProfileImageUpdate(file);
+
                 }
             }
         });
@@ -126,13 +127,16 @@ public class FragmentProfil extends Fragment {
                         user.setImageUrlId(response.fileId);
 
                         Log.d("UploadSuccess", "IMAGE ID: " + response.fileId);
-//                        67f93a3f432c476416569710
 
                         UserRepository userRepo = RepositoryFactory.getUserRepository();
                         userRepo.updateUserImageUrlWithImageId(user.getId(),response.url, response.fileId, new FirestoreCallback<Boolean>() {
                             @Override
                             public void onSuccess(Boolean result) {
                                 Log.d("UpdateSuccess", "User updated with new image");
+
+//                                Update Button
+                                btn_edit_photo.setVisibility(View.GONE);
+
                                 updateUiUserInfo();
                             }
                             @Override
@@ -148,6 +152,8 @@ public class FragmentProfil extends Fragment {
                         Log.e("UploadError", error);
                     }
                 });
+
+
             }
             @Override
             public void onError(Exception e) {
@@ -196,12 +202,14 @@ public class FragmentProfil extends Fragment {
 
     private void setupListeners() {
         profileImageContainer.setOnClickListener(v -> btn_edit_photo.setVisibility(View.VISIBLE));
+
         rootLayout.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 btn_edit_photo.setVisibility(View.GONE);
             }
             return false;
         });
+
         btn_edit_photo.setOnClickListener(v -> {
             Log.d("ImageKit", "Starting");
             filePickerHelper.checkStoragePermission();
@@ -251,11 +259,11 @@ public class FragmentProfil extends Fragment {
         FirebaseUser firebaseUser = authHelper.getCurrentUser();
 
         if (firebaseUser != null) {
+            UserRepository userRepo = RepositoryFactory.getUserRepository();
 
-            FirestoreHelper firestoreHelper = new FirestoreHelper();
-
-            firestoreHelper.getUserById(firebaseUser.getUid(), user -> {
-                if (user != null) {
+            userRepo.getUserById(userId, new FirestoreCallback<User>() {
+                @Override
+                public void onSuccess(User user) {
                     tv_name.setText(user.getName());
                     tv_email.setText(user.getEmail());
 
@@ -266,7 +274,13 @@ public class FragmentProfil extends Fragment {
                         Log.d("Image","Setting Image Profile Failed");
                     }
                 }
+
+                @Override
+                public void onError(Exception e) {
+
+                }
             });
+
         } else {
             tv_name.setText("Unknown User");
             tv_email.setText("-");

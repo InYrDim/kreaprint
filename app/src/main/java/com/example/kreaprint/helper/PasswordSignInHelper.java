@@ -35,7 +35,7 @@ public class PasswordSignInHelper {
 
     public void registerWithPassword(String email, String password, String displayName, AuthCallback callback) {
         if (email.isEmpty() || password.isEmpty() || displayName.isEmpty()) {
-            callback.onLoginFailure(new IllegalArgumentException("Email, Password, dan Username harus diisi!"));
+            callback.onLoginFailure(new IllegalArgumentException("Email, Password, dan Nama harus diisi!"));
             return;
         }
 
@@ -43,10 +43,12 @@ public class PasswordSignInHelper {
 
         authHelper.auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
+
+//                    When task is success, update the firestore with the display name
                     if (task.isSuccessful()) {
                         FirebaseUser user = authHelper.auth.getCurrentUser();
                         if (user != null) {
-                            // Update user profile with display name
+
                             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                     .setDisplayName(displayName)
                                     .build();

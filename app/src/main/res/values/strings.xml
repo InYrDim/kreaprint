@@ -40,6 +40,8 @@
     <string name="ps_orders">Pesanan Saya</string>
     <string name="ps_change_password">Ganti Password</string>
     <string name="ps_edit_profile">Edit Profil</string>
+    <string name="ps_default_profile">User</string>
+    <string name="ps_email">email@email.com</string>
 
     <string name="ps_icon_goto_pesanan">Icon Action Pesanan Saya</string>
 
