@@ -9,13 +9,11 @@ public class User {
     private String phone = "";  // Default kosong
     private String alamat = ""; // Default kosong
     private String role = "customer"; // "customer" atau "admin"
-
-
     private String imageUrl = "https://i.ibb.co.com/99DSRD4c/default-profile-kreaprint.png", imageUrlId;
     private Timestamp createdAt;
 
     public User() {
-        // Konstruktor kosong untuk Firestore
+
     }
 
     public User(String id, String nama, String email, String role, Timestamp  createdAt) {

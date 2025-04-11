@@ -19,10 +19,12 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+import retrofit2.http.Path;
 
 public class ImagekitHelper {
 
@@ -48,6 +50,21 @@ public class ImagekitHelper {
 //                @Part("token") RequestBody token,
                 @Part("useUniqueFileName") RequestBody useUniqueFileName
         );
+
+    }
+
+    public interface DeleteCallback {
+        void onSuccess(DeleteResponse response);
+        void onError(String error);
+    }
+
+    public interface DeleteService {
+        @DELETE("{fileId}")
+        @Headers({
+                "Accept: application/json",
+                "Authorization: Basic cHJpdmF0ZV9pb28zUEFPRFUzbmtnSVNxc216VTlxa2pMajA9Og=="
+        })
+        Call<DeleteResponse> deleteFile(@Path("fileId") String fileId);
     }
 
     public interface TokenService {
@@ -57,6 +74,38 @@ public class ImagekitHelper {
                 "Authorization: Basic cHJpdmF0ZV9pb28zUEFPRFUzbmtnSVNxc216VTlxa2pMajA9Og=="
         })
         Call<AuthTokenResponse> getToken(@Body AuthTokenRequest request);
+    }
+
+    public static void deleteFile(String fileId, DeleteCallback callback) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://api.imagekit.io/v1/files/") // base URL ends with /
+                .client(new OkHttpClient.Builder().build())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        DeleteService deleteService = retrofit.create(DeleteService.class);
+
+        Call<DeleteResponse> call = deleteService.deleteFile(fileId);
+
+        call.enqueue(new Callback<DeleteResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<DeleteResponse> call, @NonNull Response<DeleteResponse> response) {
+                if (response.isSuccessful()) {
+                    callback.onSuccess(response.body());
+                } else {
+                    try {
+                        callback.onError(response.errorBody() != null ? response.errorBody().string() : "Unknown error");
+                    } catch (IOException e) {
+                        callback.onError("Error parsing error: " + e.getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<DeleteResponse> call, @NonNull Throwable t) {
+                callback.onError("Request failed: " + t.getMessage());
+            }
+        });
     }
 
     public static void uploadFile(File file, UploadCallback callback) {
@@ -95,6 +144,8 @@ public class ImagekitHelper {
             }
         });
     }
+
+
 
     // The getUploadToken function mimics your JavaScript getToken function.
     private static void getUploadToken(TokenCallback callback) {
@@ -146,5 +197,9 @@ public class ImagekitHelper {
         public String name;
         public String url;
         public String thumbnailUrl;
+    }
+
+    public  static class DeleteResponse {
+        public String message;
     }
 }

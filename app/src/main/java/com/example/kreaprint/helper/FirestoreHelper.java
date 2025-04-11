@@ -18,6 +18,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,6 +30,8 @@ public class FirestoreHelper {
 
     private final String TAG = "FirestoreHelper";
 
+    private static final String USERS_COLLECTION = "users";
+
     public void addUser(@NonNull User user, FirestoreCallback<Boolean> callback) {
         db.collection("users").document(user.getId())
                 .set(user)
@@ -38,6 +41,7 @@ public class FirestoreHelper {
                     callback.onCallback(false);
                 });
     }
+
     public void saveUserToFirestore(FirebaseUser user) {
         DocumentReference userRef = db.collection("users").document(user.getUid());
 
@@ -53,16 +57,19 @@ public class FirestoreHelper {
                 newUser.setEmail(user.getEmail());
                 newUser.setCreatedAt(Timestamp.now());
 
-                newUser.setImageUrl(String.valueOf(user.getPhotoUrl()));
+//                Update PhotoProfile on Firestore, If photo exist on Firebase user use it
+                if (user.getPhotoUrl() != null) {
+                    String photoUrl = user.getPhotoUrl().toString();
+                    Log.d(TAG, "User photo URL: " + photoUrl);
+                    newUser.setImageUrl(photoUrl);
+                }
 
                 userRef.set(newUser)
-                        .addOnSuccessListener(aVoid -> Log.d(TAG, "User added to Firestore"))
-                        .addOnFailureListener(e -> Log.e(TAG, "Error adding user to Firestore", e));
+                    .addOnSuccessListener(aVoid -> Log.d(TAG, "User added to Firestore"))
+                    .addOnFailureListener(e -> Log.e(TAG, "Error adding user to Firestore", e));
             }
         });
     }
-
-
 
     public void getUserById(String userId, FirestoreCallback<User> callback) {
         db.collection("users").document(userId)
@@ -80,12 +87,64 @@ public class FirestoreHelper {
                     callback.onCallback(null);
                 });
     }
+
+
+    /**
+     * Updates a user document in Firestore.
+     *
+     * @param user     The User object containing the updated data.
+     * @param callback A callback to handle the success or failure of the operation.
+     */
     public void updateUser(User user, FirestoreCallback<Boolean> callback) {
-        db.collection("users").document(user.getId())
-                .set(user)
-                .addOnSuccessListener(aVoid -> callback.onCallback(true))
+        if (user == null || user.getId() == null || user.getId().isEmpty()) {
+            Log.e(TAG, "Invalid user or user ID provided.");
+            callback.onCallback(false);
+            return;
+        }
+
+        Map<String, Object> userMap = new HashMap<>();
+        if (user.getNama() != null) {
+            userMap.put("name", user.getNama());
+        }
+        if (user.getEmail() != null) {
+            userMap.put("email", user.getEmail());
+        }
+
+        db.collection(USERS_COLLECTION)
+                .document(user.getId())
+                .update(userMap)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "User updated successfully: " + user.getId());
+                    callback.onCallback(true);
+                })
                 .addOnFailureListener(e -> {
-                    Log.e("Firestore", "Gagal memperbarui user", e);
+                    Log.e(TAG, "Failed to update user: " + user.getId(), e);
+                    callback.onCallback(false);
+                });
+    }
+
+    /**
+     * Updates a user document in Firestore with merge option.
+     *
+     * @param user     The User object containing the updated data.
+     * @param callback A callback to handle the success or failure of the operation.
+     */
+    public void updateUserWithMerge(User user, FirestoreCallback<Boolean> callback) {
+        if (user == null || user.getId() == null || user.getId().isEmpty()) {
+            Log.e(TAG, "Invalid user or user ID provided.");
+            callback.onCallback(false);
+            return;
+        }
+
+        db.collection(USERS_COLLECTION)
+                .document(user.getId())
+                .set(user, SetOptions.merge())
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "User updated successfully: " + user.getId());
+                    callback.onCallback(true);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Failed to update user: " + user.getId(), e);
                     callback.onCallback(false);
                 });
     }

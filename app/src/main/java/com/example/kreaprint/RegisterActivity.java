@@ -52,9 +52,7 @@ public class RegisterActivity extends AppCompatActivity {
         ivTogglePassword = findViewById(R.id.iv_reg_toggle_password);
 
         registerWithPassword();
-
         registerWithGoogle();
-
         loginInsteadRegister();
 
         ivTogglePassword.setOnClickListener(v -> togglePasswordVisibility());
@@ -126,6 +124,7 @@ public class RegisterActivity extends AppCompatActivity {
         isPasswordVisible = !isPasswordVisible;
         editTextPassword.setSelection(editTextPassword.getText().length());
     }
+
     private void registerWithGoogle() {
         googleSignInButton = findViewById(R.id.btn_continue_with_google);
         googleSignInHelper = new GoogleSignInHelper(this, getString(R.string.default_web_client_id),  new GoogleSignInHelper.GoogleSignInCallback() {
