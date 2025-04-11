@@ -62,9 +62,9 @@
     <string name="greeting_slogan">Pesan online, ambil langsung!</string>
 
     <!--    Main Menu Navigation -->
-    <string name="beranda_navigation">Beranda</string>
-    <string name="pesanan_navigation">Pesanan</string>
+    <string name="beranda_navigation">Produk Kami</string>
     <string name="profil_navigation">Profil</string>
+
 
     <!--    Beranda Section Title-->
     <string name="text_print_products">Produk Cetak</string>

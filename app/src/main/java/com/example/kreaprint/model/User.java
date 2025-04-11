@@ -6,11 +6,11 @@ public class User {
     private String id;
     private String nama;
     private String email;
-    private String phone = "";  // Default kosong
-    private String alamat = ""; // Default kosong
-    private String role = "customer"; // "customer" atau "admin"
+    private String phone = "";
+    private String alamat = "";
+    private String role = "customer";
     private String imageUrl = "https://i.ibb.co.com/99DSRD4c/default-profile-kreaprint.png", imageUrlId;
-    private Timestamp createdAt;
+    private Timestamp createdAt = Timestamp.now();
 
     public User() {
 

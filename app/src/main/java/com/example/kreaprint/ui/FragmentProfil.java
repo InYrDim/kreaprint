@@ -50,7 +50,6 @@ public class FragmentProfil extends Fragment {
     private AuthHelper authHelper;
     private View view;
 
-    // Declare the TextView fields for user info
     private TextView tv_name, tv_email;
 
     Button changePasswordBtn, editProfileBtn;
@@ -125,7 +124,7 @@ public class FragmentProfil extends Fragment {
                 }
             });
         } else {
-            uploadNewImageAndUpdateUser(user, file, firestoreHelper); // No image to delete
+            uploadNewImageAndUpdateUser(user, file, firestoreHelper);
         }
     }
 

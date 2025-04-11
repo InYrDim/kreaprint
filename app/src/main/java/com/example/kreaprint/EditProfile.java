@@ -27,16 +27,18 @@ public class EditProfile extends AppCompatActivity {
 
         epToast = new ToastHelper(this);
 
-        String userId = getIntent().getStringExtra("USER_ID");
-        Log.d("USER_ID", userId);
-
+        AuthHelper authHelper = new AuthHelper(this);
+        FirebaseUser user = authHelper.getCurrentUser();
+        if (user == null) {
+            epToast.showToast("User tidak ditemukan", ToastHelper.ToastType.ERROR);
+            finish();
+            return;
+        }
+        String userId = user.getUid();
         Button btnUpdate = findViewById(R.id.btn_ep);
 
         TextView editTextNewDisplayName = findViewById(R.id.tv_ep_fullname);
         TextView editTextNewEmail = findViewById(R.id.tv_ep_email);
-
-        AuthHelper authHelper = new AuthHelper(this);
-        FirebaseUser user = authHelper.getCurrentUser();
 
         editTextNewDisplayName.setText(user.getDisplayName());
         editTextNewEmail.setText(user.getEmail());
