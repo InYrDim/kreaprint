@@ -18,7 +18,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.imagekit.android.ImageKit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,6 +61,8 @@ public class FirestoreHelper {
             }
         });
     }
+
+
 
     public void getUserById(String userId, FirestoreCallback<User> callback) {
         db.collection("users").document(userId)

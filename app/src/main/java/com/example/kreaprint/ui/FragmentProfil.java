@@ -135,22 +135,34 @@ public class FragmentProfil extends Fragment {
 
             FirestoreHelper firestoreHelper = new FirestoreHelper();
 
-            String displayName = firebaseUser.getDisplayName();
-            String email = firebaseUser.getEmail();
+            firestoreHelper.getUserById(firebaseUser.getUid(), user -> {
+                if (user != null) {
+                    tv_name.setText(user.getNama());
+                    tv_email.setText(user.getEmail());
+                }
+                try {
+                    Log.d("Image", user.getImageUrl());
+                } catch (Exception e) {
+                    Log.d("Image","Get Photo Error");
+                }
+            });
 
-            if (displayName == null || displayName.isEmpty()) {
-                displayName = "User" + System.currentTimeMillis();
-            }
-
-            try {
-                Log.d("Image", firebaseUser.getPhotoUrl().toString());
-            } catch (Exception e) {
-                Log.d("Image","Get Photo Error");
-            }
-//            ImageLoaderHelper.loadImage(requireContext(), Objects.requireNonNull(firebaseUser.getPhotoUrl()).toString(), profileImage);
-
-            tv_name.setText(displayName);
-            tv_email.setText(email);
+//            String displayName = firebaseUser.getDisplayName();
+//            String email = firebaseUser.getEmail();
+//
+//            if (displayName == null || displayName.isEmpty()) {
+//                displayName = "User" + System.currentTimeMillis();
+//            }
+//
+//            try {
+//                Log.d("Image", firebaseUser.getPhotoUrl().toString());
+//            } catch (Exception e) {
+//                Log.d("Image","Get Photo Error");
+//            }
+////            ImageLoaderHelper.loadImage(requireContext(), Objects.requireNonNull(firebaseUser.getPhotoUrl()).toString(), profileImage);
+//
+//            tv_name.setText(displayName);
+//            tv_email.setText(email);
         } else {
             tv_name.setText("Unknown User");
             tv_email.setText("-");
