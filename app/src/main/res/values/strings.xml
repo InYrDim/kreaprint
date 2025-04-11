@@ -67,8 +67,8 @@
     <string name="profil_navigation">Profil</string>
 
     <!--    Beranda Section Title-->
-    <string name="text_print_products">Print Products</string>
-    <string name="text_hot_products">Hot Products</string>
+    <string name="text_print_products">Produk Cetak</string>
+    <string name="text_hot_products">Produk yang lagi hype🔥</string>
 
     <string name="text_promo_banner_description">Promo Banner Description</string>
 
@@ -77,8 +77,9 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-
+<!-- __FOR TESTING ONLY-->
     <string name="default_web_client_id">30457738574-ttchsa0ka5if0hfv3pehug2e00sk42r9.apps.googleusercontent.com</string>
-
+    <string name="imagekit_public_key">public_MN7oKthFlVuMt4f5bk0p0V5OA30=</string>
+    <string name="imagekit_url_endpoint">https://ik.imagekit.io/kreaprint</string>
 
 </resources>

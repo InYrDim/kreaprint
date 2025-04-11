@@ -3,6 +3,7 @@ package com.example.kreaprint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,6 +18,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.bumptech.glide.Glide;
 import com.example.kreaprint.helper.FirestoreHelper;
 import com.example.kreaprint.helper.ImageLoaderHelper;
+import com.example.kreaprint.helper.ToastHelper;
 import com.example.kreaprint.model.Product;
 
 public class ProductDetailActivity extends AppCompatActivity {
@@ -27,6 +29,8 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     private FirestoreHelper firestoreHelper;
     private String productId;
+
+    private ToastHelper productDetailToast = new ToastHelper(ProductDetailActivity.this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +44,11 @@ public class ProductDetailActivity extends AppCompatActivity {
         imgProduct = findViewById(R.id.iv_detail_gambar);
 
         ImageButton backBtn = findViewById(R.id.btn_back);
+
+        Button order = findViewById(R.id.btn_order);
+        order.setOnClickListener(v -> {
+            productDetailToast.showToast("Ordering Via Whatsapp");
+        });
 
         backBtn.setOnClickListener(v -> {
             Intent intent = new Intent(ProductDetailActivity.this, MainActivity.class);

@@ -1,14 +1,22 @@
 package com.example.kreaprint;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.FrameLayout;
+import androidx.annotation.NonNull;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.kreaprint.helper.ToastHelper;
 import com.example.kreaprint.model.Product;
 import com.example.kreaprint.ui.FragmentBeranda;
 import com.example.kreaprint.ui.FragmentPesanan;
@@ -17,6 +25,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -27,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     private int currentPage = 0;
     private Handler debounceHandler = new Handler(Looper.getMainLooper());
     private Runnable debounceRunnable;
+
+    private static final String TAG = "StoragePermission";
 
     private static final long DEBOUNCE_DELAY = 300;
 
@@ -53,9 +64,9 @@ public class MainActivity extends AppCompatActivity {
             if (item.getItemId() == R.id.home) {
                 newPage = 0;
                 selectedFragment = new FragmentBeranda();
-            } else if (item.getItemId() == R.id.order) {
+            } else if (item.getItemId() == R.id.profile) {
                 newPage = 1;
-                selectedFragment = new FragmentPesanan();
+                selectedFragment = new FragmentProfil();
             } else if (item.getItemId() == R.id.profile) {
                 newPage = 2;
                 selectedFragment = new FragmentProfil();
@@ -71,8 +82,8 @@ public class MainActivity extends AppCompatActivity {
             resetIcons();
             if (item.getItemId() == R.id.home) {
                 item.setIcon(R.drawable.ic_home_fill);
-            } else if (item.getItemId() == R.id.order) {
-                item.setIcon(R.drawable.ic_order_fill);
+            } else if (item.getItemId() == R.id.profile) {
+                item.setIcon(R.drawable.ic_user_fill);
             } else if (item.getItemId() == R.id.profile) {
                 item.setIcon(R.drawable.ic_user_fill);
             }
@@ -96,9 +107,10 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
     }
+
     private void resetIcons() {
         bottomNavigationView.getMenu().findItem(R.id.home).setIcon(R.drawable.ic_home_line);
-        bottomNavigationView.getMenu().findItem(R.id.order).setIcon(R.drawable.ic_order_line);
+//        bottomNavigationView.getMenu().findItem(R.id.profile).setIcon(R.drawable.ic_order_line);
         bottomNavigationView.getMenu().findItem(R.id.profile).setIcon(R.drawable.ic_user_line);
     }
 }

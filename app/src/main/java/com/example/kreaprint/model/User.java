@@ -10,6 +10,8 @@ public class User {
     private String alamat = ""; // Default kosong
     private String role = "customer"; // "customer" atau "admin"
 
+
+    private String imageUrl = "https://i.ibb.co.com/99DSRD4c/default-profile-kreaprint.png", imageUrlId;
     private Timestamp createdAt;
 
     public User() {
@@ -35,9 +37,14 @@ public class User {
     }
 
     // Getter dan Setter
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    public String getImageUrl() { return this.imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 
+    public String getImageUrlId() { return this.imageUrlId; }
+    public void setImageUrlId(String imageUrlId) { this.imageUrlId = imageUrlId; }
+
+    public String getId() { return this.id; }
+    public void setId(String id) { this.id = id; }
     public String getNama() { return nama; }
     public void setNama(String nama) { this.nama = nama; }
 

@@ -100,10 +100,10 @@
         android:layout_marginBottom="12dp"/>
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/btn_order"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/ButtonPrimary"
-        android:text="Pesan" />
+        android:text="Pesan Via Whatsapp" />
 
 </LinearLayout>

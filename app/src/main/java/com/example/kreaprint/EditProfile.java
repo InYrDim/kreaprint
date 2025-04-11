@@ -27,7 +27,6 @@ public class EditProfile extends AppCompatActivity {
 
         epToast = new ToastHelper(this);
 
-
         String userId = getIntent().getStringExtra("USER_ID");
         Log.d("USER_ID", userId);
 

@@ -26,17 +26,18 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/brand_text"
-            android:textSize="18sp"
+            android:textSize="24sp"
             android:textStyle="bold"
             android:textColor="@color/white" />
 
         <ImageView
             android:id="@+id/iv_about"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:src="@drawable/ic_question_line"
             android:contentDescription="About Button"
             app:tint="@color/white"/>
+
     </LinearLayout>
 
     <!-- Banner Promosi -->

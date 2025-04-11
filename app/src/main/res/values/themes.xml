@@ -12,7 +12,7 @@
 
         <item name="windowSplashScreenBackground">@color/primary_color</item>
 
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_home_line</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_kreaprint_round</item>
         <!-- Required for animated icons. -->
         <item name="windowSplashScreenAnimationDuration">200</item>
 

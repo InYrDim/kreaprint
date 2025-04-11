@@ -2,6 +2,13 @@ package com.example.kreaprint.helper;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import com.example.kreaprint.model.ImagekitResponse;
 import com.example.kreaprint.model.Product;
 import com.example.kreaprint.model.User;
 import com.google.firebase.Timestamp;
@@ -11,6 +18,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.imagekit.android.ImageKit;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +30,7 @@ public class FirestoreHelper {
 
     private final String TAG = "FirestoreHelper";
 
-    public void addUser(User user, FirestoreCallback<Boolean> callback) {
+    public void addUser(@NonNull User user, FirestoreCallback<Boolean> callback) {
         db.collection("users").document(user.getId())
                 .set(user)
                 .addOnSuccessListener(aVoid -> callback.onCallback(true))
@@ -44,6 +53,8 @@ public class FirestoreHelper {
                 newUser.setNama(user.getDisplayName());
                 newUser.setEmail(user.getEmail());
                 newUser.setCreatedAt(Timestamp.now());
+
+                newUser.setImageUrl(String.valueOf(user.getPhotoUrl()));
 
                 userRef.set(newUser)
                         .addOnSuccessListener(aVoid -> Log.d(TAG, "User added to Firestore"))
@@ -68,6 +79,21 @@ public class FirestoreHelper {
                     callback.onCallback(null);
                 });
     }
+    public void updateUser(User user, FirestoreCallback<Boolean> callback) {
+        db.collection("users").document(user.getId())
+                .set(user)
+                .addOnSuccessListener(aVoid -> callback.onCallback(true))
+                .addOnFailureListener(e -> {
+                    Log.e("Firestore", "Gagal memperbarui user", e);
+                    callback.onCallback(false);
+                });
+    }
+
+    public void updateUserImageUrl(String userId, String imageUrl) {
+        db.collection("users").document(userId)
+                .update("imageUrl", imageUrl)
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "Image URL updated successfully"));
+    }
 
 
     public void addProduct(List<Product> produkList) {
@@ -80,7 +106,6 @@ public class FirestoreHelper {
             produkMap.put("deskripsi", produk.getDeskripsi());
             produkMap.put("tips", produk.getTips());
             produkMap.put("harga", produk.getHarga());
-
             db.collection("products")
                     .document(produk.getNama())
                     .set(produkMap);

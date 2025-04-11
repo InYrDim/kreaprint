@@ -7,6 +7,7 @@ public class Product {
     private String nama;
     private String kategori;
     private String imageUrl;
+
     private int jumlahOrder; // Menyimpan jumlah pesanan
     private String deskripsi;
     private int harga;

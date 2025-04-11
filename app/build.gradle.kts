@@ -28,11 +28,14 @@ android {
                 "proguard-rules.pro"
             )
         }
+
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
+
 }
 
 dependencies {
@@ -73,5 +76,8 @@ dependencies {
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 
     implementation("androidx.viewpager2:viewpager2:1.0.0")
+
+//    Image Kit
+    implementation("com.github.imagekit-developer:imagekit-android:3.0.1")
 
 }

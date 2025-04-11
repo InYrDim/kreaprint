@@ -4,11 +4,11 @@
         android:id="@+id/home"
         android:icon="@drawable/ic_home_line"
 
-        android:title="Beranda" />
-    <item
-        android:id="@+id/order"
-        android:icon="@drawable/ic_order_line"
-        android:title="Pesanan" />
+        android:title="Produk Kami" />
+<!--    <item-->
+<!--        android:id="@+id/order"-->
+<!--        android:icon="@drawable/ic_order_line"-->
+<!--        android:title="Pesanan" />-->
     <item
         android:id="@+id/profile"
         android:icon="@drawable/ic_user_line"
