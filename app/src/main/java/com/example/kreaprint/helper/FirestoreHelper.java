@@ -156,23 +156,6 @@ public class FirestoreHelper {
                 .addOnSuccessListener(aVoid -> Log.d(TAG, "Image URL updated successfully"));
     }
 
-
-    public void addProduct(List<Product> produkList) {
-        for (Product produk : produkList) {
-            Map<String, Object> produkMap = new HashMap<>();
-            produkMap.put("nama", produk.getNama());
-            produkMap.put("imageUrl", produk.getImageUrl());
-            produkMap.put("kategori", produk.getKategori());
-            produkMap.put("jumlah_order", produk.getJumlahOrder());
-            produkMap.put("deskripsi", produk.getDeskripsi());
-            produkMap.put("tips", produk.getTips());
-            produkMap.put("harga", produk.getHarga());
-            db.collection("products")
-                    .document(produk.getNama())
-                    .set(produkMap);
-        }
-    }
-
     public void addCategory(List<String> kategoriList) {
         for (String kategori : kategoriList) {
             Map<String, Object> kategoriMap = new HashMap<>();

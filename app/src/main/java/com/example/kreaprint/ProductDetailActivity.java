@@ -16,6 +16,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.kreaprint.helper.FirestoreHelper;
 import com.example.kreaprint.helper.ImageLoaderHelper;
 import com.example.kreaprint.helper.ToastHelper;
+import com.example.kreaprint.helper.firebase.FirestoreCallback;
+import com.example.kreaprint.helper.firebase.ProductRepository;
 import com.example.kreaprint.model.Product;
 
 public class ProductDetailActivity extends AppCompatActivity {
@@ -80,25 +82,29 @@ public class ProductDetailActivity extends AppCompatActivity {
     }
 
     private void getProductDetail(String productId) {
-        firestoreHelper.getProductById(productId, new FirestoreHelper.FirestoreCallback<Product>() {
-            @Override
-            public void onCallback(Product product) {
-                if (product != null) {
-                    productTitle.setText(product.getNama());
-                    productDescription.setText(product.getDeskripsi());
+
+        ProductRepository productRepository = new ProductRepository();
+        productRepository.getProductById(productId, new FirestoreCallback<Product>() {
+                @Override
+                public void onSuccess(Product product) {
+                    productTitle.setText(product.getName());
+                    productDescription.setText(product.getDescription());
                     productTip.setText(product.getTips());
-                    productPrice.setText(String.format("Rp. %s", product.getHarga()));
+                    productPrice.setText(String.format("Rp. %s", product.getPrice()));
 
                     ImageLoaderHelper.loadImage(
                             ProductDetailActivity.this,
-                            product.getImageUrl(),
+                            product.getImageUrls().get(0),
                             imgProduct
                     );
-                } else {
+                }
+
+                @Override
+                public void onError(Exception e) {
                     Toast.makeText(ProductDetailActivity.this, "Produk tidak ditemukan", Toast.LENGTH_SHORT).show();
                     finish();
                 }
-            }
+
         });
     }
 }

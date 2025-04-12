@@ -1,89 +1,86 @@
 package com.example.kreaprint.model;
 
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentReference;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Product {
-
     private String id;
+    private String name;
+    private String description;
+    private int price = 0;
+    private List<String> imageUrls = new ArrayList<>();
+    private String categoryId;
+    private boolean isActive = true;
+    private Timestamp createdAt = Timestamp.now();
 
-    private String nama;
-    private String kategori;
-    private String imageUrl;
+    private int favoriteCount = 0;
 
-    private int jumlahOrder; // Menyimpan jumlah pesanan
-    private String deskripsi;
-    private int harga;
-    private String tips;
+    private String tips = "";
 
-    public Product() {
-
-    }
-    public Product(String id, String nama, String kategori, String imageUrl, int jumlahOrder, String deskripsi, int harga, String tips) {
-        this.id = id;
-        this.nama = nama;
-        this.kategori = kategori;
-        this.imageUrl = imageUrl;
-        this.jumlahOrder = jumlahOrder;
-        this.deskripsi = deskripsi;
-        this.harga = harga;
-        this.tips = tips;
-    }
-
-
-    public void setNama(String nama) {
-        this.nama = nama;
-    }
-
-    public void setKategori(String kategori) {
-        this.kategori = kategori;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public void setJumlahOrder(int jumlahOrder) {
-        this.jumlahOrder = jumlahOrder;
-    }
-
-    public void setDeskripsi(String deskripsi) {
-        this.deskripsi = deskripsi;
-    }
-
-    public void setHarga(int harga) {
-        this.harga = harga;
+    public String getTips() {
+        return tips;
     }
 
     public void setTips(String tips) {
         this.tips = tips;
     }
 
-    public String getId() {
-        return id;
+    private int salesCount = 0; // Tambahkan ini
+
+    // Getter & Setter
+    public int getSalesCount() { return salesCount; }
+    public void setSalesCount(int salesCount) {
+        this.salesCount = salesCount;
+    }
+    public Product() {}
+
+    // Constructor update
+    public Product(String id, String name, String description, int price,
+                   List<String> imageUrls, String categoryId) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.imageUrls = imageUrls;
+        this.categoryId = categoryId;
     }
 
-    public String getNama() {
-        return nama;
+    public int getFavoriteCount() { return favoriteCount; }
+    public void setFavoriteCount(int favoriteCount) {
+        this.favoriteCount = favoriteCount;
     }
 
-    public String getKategori() {
-        return kategori;
+    // Getters & Setters
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+
+    public int getPrice() { return price; }
+    public void setPrice(int price) { this.price = price; }
+
+    public List<String> getImageUrls() { return imageUrls; }
+    public void setImageUrls(List<String> imageUrls) {
+        this.imageUrls = (imageUrls != null) ? imageUrls : new ArrayList<>();
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getCategoryId() { return categoryId; }
+    public void setCategoryId(String categoryId) {
+        this.categoryId = categoryId;
     }
 
-    public int getJumlahOrder() {
-        return jumlahOrder;
-    }
 
-    public String getDeskripsi() {
-        return deskripsi;
-    }
+    public boolean isActive() { return isActive; }
+    public void setActive(boolean active) { isActive = active; }
 
-    public int getHarga() {
-        return harga;
-    }
-    public String  getTips(){
-        return tips;
+    public Timestamp getCreatedAt() { return createdAt; }
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
     }
 }

@@ -8,6 +8,7 @@ import com.example.kreaprint.network.ApiService;
 import com.example.kreaprint.network.RetrofitClient;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -28,7 +29,7 @@ public class FirestoreUploader {
 
     public void tambahProdukKeFirestore(List<Product> produkList) {
         for (Product produk : produkList) {
-            File fileGambar = new File("/storage/emulated/0/Download/" + produk.getImageUrl());
+            File fileGambar = new File("/storage/emulated/0/Download/" + produk.getImageUrls());
             uploadImageToFreeImageHost(produk, fileGambar);
         }
     }
@@ -46,7 +47,6 @@ public class FirestoreUploader {
                     String imageUrl = response.body().image.url;
                     Log.d("UPLOAD", "Gambar berhasil diunggah: " + imageUrl);
 
-                    // Simpan data produk ke Firestore dengan URL gambar
                     simpanProdukKeFirestore(produk, imageUrl);
                 } else {
                     Log.e("UPLOAD", "Upload gagal, response tidak valid");
@@ -61,7 +61,11 @@ public class FirestoreUploader {
     }
 
     private void simpanProdukKeFirestore(Product produk, String imageUrl) {
-        produk.setImageUrl(imageUrl);
+
+        List<String> imageUrls = new ArrayList<String>();
+        imageUrls.add(imageUrl);
+
+        produk.setImageUrls(imageUrls);
 
         db.collection("products")
                 .add(produk)

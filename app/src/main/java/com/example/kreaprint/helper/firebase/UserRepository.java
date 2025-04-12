@@ -6,6 +6,8 @@ import android.util.Log;
 import com.example.kreaprint.model.User;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -65,6 +67,45 @@ public class UserRepository extends BaseRepository {
                 })
                 .addOnFailureListener(e -> {
                     logError("Update nama", e);
+                    callback.onError(e);
+                });
+    }
+
+    public void updatePhoneNumber(String userId, String phoneNumber, FirestoreCallback<Boolean> callback) {
+        db.collection(COLLECTION).document(userId)
+                .update("phoneNumber", phoneNumber)
+                .addOnSuccessListener(aVoid -> {
+                    logSuccess("Update nomor HP");
+                    callback.onSuccess(true);
+                })
+                .addOnFailureListener(e -> {
+                    logError("Update nomor HP", e);
+                    callback.onError(e);
+                });
+    }
+
+    public void addToFavorites(String userId, DocumentReference productRef, FirestoreCallback<Boolean> callback) {
+        db.collection(COLLECTION).document(userId)
+                .update("favorites", FieldValue.arrayUnion(productRef))
+                .addOnSuccessListener(aVoid -> {
+                    logSuccess("Tambah favorit");
+                    callback.onSuccess(true);
+                })
+                .addOnFailureListener(e -> {
+                    logError("Tambah favorit", e);
+                    callback.onError(e);
+                });
+    }
+
+    public void removeFromFavorites(String userId, DocumentReference productRef, FirestoreCallback<Boolean> callback) {
+        db.collection(COLLECTION).document(userId)
+                .update("favorites", FieldValue.arrayRemove(productRef))
+                .addOnSuccessListener(aVoid -> {
+                    logSuccess("Hapus favorit");
+                    callback.onSuccess(true);
+                })
+                .addOnFailureListener(e -> {
+                    logError("Hapus favorit", e);
                     callback.onError(e);
                 });
     }

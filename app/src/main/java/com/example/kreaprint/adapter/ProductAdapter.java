@@ -11,7 +11,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.example.kreaprint.R;
 import com.example.kreaprint.helper.ImageLoaderHelper;
 import com.example.kreaprint.model.Product;
@@ -19,10 +18,10 @@ import com.example.kreaprint.model.Product;
 import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
-    private List<Product> produkList;
+    private List<Product> productList;
     private HotProductAdapter.OnItemClickListener listener;
-    public ProductAdapter(List<Product> produkList) {
-        this.produkList = produkList;
+    public ProductAdapter(List<Product> productList) {
+        this.productList = productList;
     }
 
     @NonNull
@@ -34,12 +33,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Product produk = produkList.get(position);
-        holder.tvNama.setText(produk.getNama());
+        Product produk = productList.get(position);
+        holder.tvNama.setText(produk.getName());
 
         ImageLoaderHelper.loadImage(
                 holder.itemView.getContext(),
-                produk.getImageUrl(),
+                produk.getImageUrls().get(0),
                 holder.imgProduct
         );
 
@@ -57,13 +56,19 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         void onItemClick(Product product);
     }
 
+    public void updateList(List<Product> newList) {
+        productList.clear();
+        productList.addAll(newList);
+        notifyDataSetChanged();
+    }
+
     public void setOnItemClickListener(HotProductAdapter.OnItemClickListener listener) {
         this.listener = listener;
     }
 
     @Override
     public int getItemCount() {
-        return produkList.size();
+        return productList.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

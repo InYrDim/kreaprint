@@ -30,51 +30,10 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
-
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash_screen_activity);
-
-//        ImagekitHelper.getFileDetails("67e07954432c47641667e3a7")
-//                .enqueue(new Callback<ImagekitResponse>() {
-//                    @Override
-//                    public void onResponse(Call<ImagekitResponse> call, Response<ImagekitResponse> response) {
-//                        if (response.isSuccessful() && response.body() != null) {
-//                            ImagekitResponse fileDetails = response.body();
-//                            Log.d("ImageKit", "File Name: " + fileDetails.getName());
-//                            Log.d("ImageKit", "File URL: " + fileDetails.getUrl());
-//                        } else {
-//                            Log.e("ImageKit", "Request failed: " + response.message());
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onFailure(Call<ImagekitResponse> call, Throwable t) {
-//                        Log.e("ImageKit", "API Call Failed", t);
-//                    }
-//                });
-
-//        ImagekitHelper.deleteFile("67e07954432c47641667e3a7").enqueue(new Callback<Void>() {
-//            @Override
-//            public void onResponse(Call<Void> call, Response<Void> response) {
-//                if (response.isSuccessful()) {
-//                    Log.d("ImageKit", "File deleted successfully.");
-//                } else {
-//                    Log.e("ImageKit", "Failed to delete file: " + response.message());
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<Void> call, Throwable t) {
-//                Log.e("ImageKit", "API Call Failed", t);
-//            }
-//        });
-
-
-
-
 
         authHelper = new AuthHelper(this);
         toastHelper = new ToastHelper(this);
@@ -107,6 +66,4 @@ public class SplashScreenActivity extends AppCompatActivity {
 
         berandaViewModel.loadAllData();
     }
-
-
 }

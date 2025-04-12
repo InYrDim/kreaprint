@@ -9,10 +9,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.example.kreaprint.R;
 import com.example.kreaprint.helper.ImageLoaderHelper;
-import com.example.kreaprint.model.Pesanan;
 import com.example.kreaprint.model.Product;
 
 import java.util.List;
@@ -23,7 +21,11 @@ public class HotProductAdapter extends RecyclerView.Adapter<HotProductAdapter.Vi
     public HotProductAdapter(List<Product> produkList) {
         this.produkList = produkList;
     }
-
+    public void updateList(List<Product> newList) {
+        produkList.clear();
+        produkList.addAll(newList);
+        notifyDataSetChanged();
+    }
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -34,11 +36,13 @@ public class HotProductAdapter extends RecyclerView.Adapter<HotProductAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Product produk = produkList.get(position);
-        holder.tvNama.setText(produk.getNama());
+        holder.tvNama.setText(produk.getName());
+
+
 
         ImageLoaderHelper.loadImage(
                 holder.itemView.getContext(),
-                produk.getImageUrl(),
+                produk.getImageUrls().get(0),
                 holder.imgProduct
         );
 
