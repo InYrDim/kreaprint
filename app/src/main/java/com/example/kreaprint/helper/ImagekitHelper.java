@@ -33,7 +33,7 @@ public class ImagekitHelper {
     public static final String DEFAULT_PROFILE_FOLDER = "kreaprint/user_profiles";
     public static final String DEFAULT_PRODUCT_FOLDER = "kreaprint/products";
 
-    private static final String TAG = "ImagekitHelper";
+    public static final String TAG = "ImagekitHelper";
 
 
     private static final String UPLOAD_BASE_URL = "https://upload.imagekit.io/api/v2/files/";
@@ -120,6 +120,9 @@ public class ImagekitHelper {
     *  @param params: Map of parameters to be sent with the request
     */
     public static void uploadFile(File file, Map<String, String> params, UploadCallback callback) {
+
+        Log.d(TAG, "Initializing Upload File");
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(UPLOAD_BASE_URL)
                 .client(new OkHttpClient.Builder().build())
@@ -139,11 +142,15 @@ public class ImagekitHelper {
                     RequestBody.create(entry.getValue(), MediaType.parse("text/plain")));
         }
 
+        Log.d(TAG, "Starting Upload File");
+
         Call<UploadResponse> call = uploadService.uploadFile(filePart, requestBodyMap);
 
         call.enqueue(new Callback<UploadResponse>() {
             @Override
             public void onResponse(@NonNull Call<UploadResponse> call, @NonNull Response<UploadResponse> response) {
+                Log.d(TAG, "Upload response: " + response.toString());
+
                 if (response.isSuccessful() && response.body() != null) {
                     callback.onSuccess(response.body());
                 } else {
@@ -157,6 +164,7 @@ public class ImagekitHelper {
 
             @Override
             public void onFailure(@NonNull Call<UploadResponse> call, @NonNull Throwable t) {
+                Log.e(TAG, "Upload failed: " + t.getMessage());
                 callback.onError("Upload failed: " + t.getMessage());
             }
         });

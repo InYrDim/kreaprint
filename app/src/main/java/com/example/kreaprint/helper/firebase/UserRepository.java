@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class UserRepository extends BaseRepository {
     private static final String COLLECTION = "users";
-
+    public static final String TAG = "UserRepository";
     public UserRepository() {
         super("UserRepository");
     }

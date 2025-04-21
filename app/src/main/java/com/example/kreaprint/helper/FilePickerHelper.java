@@ -23,7 +23,7 @@ import com.imagekit.android.entity.UploadResponse;
 import java.io.File;
 
 public class FilePickerHelper {
-    private static final String TAG = "FilePickerHelper";
+    public static final String TAG = "FilePickerHelper";
 
     private final Fragment fragment;
     private final ImageView imageView;

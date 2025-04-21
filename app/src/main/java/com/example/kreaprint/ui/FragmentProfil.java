@@ -64,7 +64,9 @@ public class FragmentProfil extends Fragment {
     private FilePickerHelper filePickerHelper;
     private final ActivityResultLauncher<Intent> filePickerLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+//                Image Selected Succesfully
                 if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    Log.d(FilePickerHelper.TAG , "Image Selected Succesfully");
                     Uri selectedImageUri = result.getData().getData();
                     handleImageSelection(selectedImageUri);
                 }
@@ -80,7 +82,6 @@ public class FragmentProfil extends Fragment {
                 File file = new File(filePath);
                 if (file.exists()) {
                     handleProfileImageUpdate(file);
-
                 }
             }
         });
@@ -101,12 +102,13 @@ public class FragmentProfil extends Fragment {
             @Override
             public void onSuccess(User user) {
                 if (user == null) {
-                    Log.e("FirestoreError", "User not found");
+                    Log.e(UserRepository.TAG, "User not found");
                     return;
                 }
 
 //                Delete Old Image (Existing Image) if Exists
                 if( user.getImageUrlId() != null && !user.getImageUrlId().isEmpty()) {
+                    Log.d(UserRepository.TAG, "Old image found, deleting old image");
                     String imageUrlId = user.getImageUrlId();
                     deleteImageOnImageKit(imageUrlId);
                 }
@@ -118,21 +120,22 @@ public class FragmentProfil extends Fragment {
                 params.put("useUniqueFileName", "true");
                 params.put("folder", DEFAULT_PROFILE_FOLDER);
 
+                Log.d(UserRepository.TAG, "Uploading profile to image kit");
                 ImagekitHelper.uploadFile(file,  params, new ImagekitHelper.UploadCallback() {
                     @Override
                     public void onSuccess(ImagekitHelper.UploadResponse response) {
-                        Log.d("UploadSuccess", "URL: " + response.url);
+                        Log.d(ImagekitHelper.TAG, "URL: " + response.url);
 
                         user.setImageUrl(response.url);
                         user.setImageUrlId(response.fileId);
 
-                        Log.d("UploadSuccess", "IMAGE ID: " + response.fileId);
+                        Log.d(ImagekitHelper.TAG, "IMAGE ID: " + response.fileId);
 
                         UserRepository userRepo = RepositoryFactory.getUserRepository();
                         userRepo.updateUserImageUrlWithImageId(user.getId(),response.url, response.fileId, new FirestoreCallback<Boolean>() {
                             @Override
                             public void onSuccess(Boolean result) {
-                                Log.d("UpdateSuccess", "User updated with new image");
+                                Log.d(ImagekitHelper.TAG, "User updated with new image");
 
 //                                Update Button
                                 btn_edit_photo.setVisibility(View.GONE);
@@ -141,7 +144,7 @@ public class FragmentProfil extends Fragment {
                             }
                             @Override
                             public void onError(Exception e) {
-                                Log.e("UpdateError", "Error updating user: " + e.getMessage());
+                                Log.e(ImagekitHelper.TAG, "Error updating user: " + e.getMessage());
                             }
                         });
 
@@ -149,7 +152,7 @@ public class FragmentProfil extends Fragment {
 
                     @Override
                     public void onError(String error) {
-                        Log.e("UploadError", error);
+                        Log.e(ImagekitHelper.TAG, error + " Line 155");
                     }
                 });
 
