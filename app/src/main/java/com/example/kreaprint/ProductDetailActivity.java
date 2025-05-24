@@ -48,7 +48,7 @@ public class ProductDetailActivity extends AppCompatActivity {
             productDetailToast.showToast("Ordering Via Whatsapp");
 
             // WhatsApp order logic
-            String phoneNumber = "+62";  //Isi sendiri
+            String phoneNumber = String.valueOf(R.string.default_admin);  //Isi sendiri
             String productName = productTitle.getText().toString();
             String message = "Halo, saya ingin memesan produk: " + productName;
 
@@ -104,7 +104,6 @@ public class ProductDetailActivity extends AppCompatActivity {
                     Toast.makeText(ProductDetailActivity.this, "Produk tidak ditemukan", Toast.LENGTH_SHORT).show();
                     finish();
                 }
-
         });
     }
 }

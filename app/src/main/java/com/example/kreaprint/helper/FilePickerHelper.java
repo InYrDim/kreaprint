@@ -70,8 +70,6 @@ public class FilePickerHelper {
         }
     }
 
-
-
     // Open File Picker
     private void openFilePicker() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -91,57 +89,5 @@ public class FilePickerHelper {
             callback.onFileSelected(imageUri);
 
         }
-    }
-
-
-
-    // Upload Image to ImageKit
-    private void uploadImageToImageKit(Uri imageUri) {
-
-//        Get Image Currently
-//        Log.d(TAG, "Uploading file: " + imageUri.toString());
-//
-//        // Get file path
-//        String filePath = FileUtils.getPath(fragment.requireContext(), imageUri);
-//        if (filePath == null) {
-//            Log.e(TAG, "Failed to get file path from URI");
-//            return;
-//        }
-//
-//
-//        File file = new File(FileUtils.getPath(fragment.requireContext(), imageUri));
-//        if (!file.exists()) {
-//            Log.e(TAG, "File does not exist: " + file.getAbsolutePath());
-//            return;
-//        }
-//
-//        ImagekitHelper.uploadFile(file, new ImagekitHelper.UploadCallback() {
-//            @Override
-//            public void onSuccess(ImagekitHelper.UploadResponse response) {
-//                Log.d("UploadSuccess", "URL: " + response.url);
-//
-////                Update Database
-//                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//                if (user != null) {
-//                    String userId = user.getUid();
-//                    String imageUrl = response.url;
-//
-//                    User currentUser = new User();
-//                    currentUser.setId(userId);
-//                    currentUser.setImageUrl(imageUrl);
-//                    currentUser.setImageUrlId(response.fileId);
-//
-//                    FirestoreHelper firestoreHelper = new FirestoreHelper();
-//                    firestoreHelper.updateUserWithMerge(currentUser, data -> {
-//                        Log.d("UpdateSuccess", "User data updated successfully");
-//                    });
-//                }
-//            }
-//
-//            @Override
-//            public void onError(String error) {
-//                Log.e("UploadError", error);
-//            }
-//        });
     }
 }

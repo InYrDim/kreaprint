@@ -36,7 +36,7 @@ public class ChangePassword extends AppCompatActivity {
     private boolean isNewPasswordVisible = false;
     private boolean isConfirmPasswordVisible = false;
 
-    private ToastHelper changePasswordToast = new ToastHelper(ChangePassword.this);
+    private final ToastHelper changePasswordToast = new ToastHelper(ChangePassword.this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

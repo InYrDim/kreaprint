@@ -89,24 +89,24 @@ public class EditProfile extends AppCompatActivity {
                     @Override
                     public void onSuccess(Boolean result) {
                         // Handle success
+                        epToast.showToast("Profil berhasil diperbarui!", ToastHelper.ToastType.SUCCESS);
                     }
 
                     @Override
                     public void onError(Exception e) {
                         // Handle error
-                        if (e instanceof FirebaseFirestoreException) {
-
-                        }
                     }
                 });
 
-                user.updateEmail(newEmail).addOnCompleteListener(emailTask -> {
+                user.verifyBeforeUpdateEmail(newEmail).addOnCompleteListener(emailTask -> {
                     if (emailTask.isSuccessful()) {
-                        epToast.showToast("Profil berhasil diperbarui!", ToastHelper.ToastType.SUCCESS);
+                        epToast.showToast("Profil berhasil diperbarui! Silahkan cek email untuk verifikasi", ToastHelper.ToastType.SUCCESS);
                         finish();
                     } else {
                         epToast.showToast("Gagal memperbarui email: " + emailTask.getException().getMessage(), ToastHelper.ToastType.ERROR);
                     }
+                }).addOnFailureListener(e -> {
+                    epToast.showToast("Gagal memperbarui email: " + e.getMessage(), ToastHelper.ToastType.ERROR);
                 });
 
                 callback.onFinish();

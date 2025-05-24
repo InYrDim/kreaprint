@@ -18,7 +18,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class FirestoreUploader {
-    private static final String API_KEY = "6d207e02198a847aa98d0a2a901485a5"; // Ganti dengan API Key FreeImage.Host
+    private static final String API_KEY = "6d207e02198a847aa98d0a2a901485a5";
     private FirebaseFirestore db;
     private ApiService apiService;
 

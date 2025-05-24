@@ -18,13 +18,14 @@
         android:id="@+id/tv_nama_produk"
         android:layout_width="245dp"
         android:layout_height="wrap_content"
-        android:paddingStart="12dp"
+        android:paddingHorizontal="12dp"
         android:paddingBottom="8dp"
-        android:text="name produk"
+        android:text="produk"
         android:textAlignment="textStart"
         android:textSize="16sp"
         android:textStyle="bold"
         android:textColor="@color/dark_text_color"
+        android:background="@color/white"
         app:layout_constraintBottom_toBottomOf="@+id/img_product"
         app:layout_constraintStart_toStartOf="@+id/img_product" />
 

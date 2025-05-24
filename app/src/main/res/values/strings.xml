@@ -84,4 +84,6 @@
     <string name="imagekit_public_key">public_MN7oKthFlVuMt4f5bk0p0V5OA30=</string>
     <string name="imagekit_url_endpoint">https://ik.imagekit.io/kreaprint</string>
 
+<!--    String Admin-->
+    <string name="default_admin">+6285255553680</string>
 </resources>

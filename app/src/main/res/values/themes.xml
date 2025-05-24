@@ -7,15 +7,12 @@
         <item name="android:fontFamily">@font/font_content</item>
     </style>
 
-
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
-
         <item name="windowSplashScreenBackground">@color/primary_color</item>
-
         <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_kreaprint_round</item>
+
         <!-- Required for animated icons. -->
         <item name="windowSplashScreenAnimationDuration">200</item>
-
         <item name="postSplashScreenTheme">@style/Theme.AppCompat.NoActionBar</item>
     </style>
 
